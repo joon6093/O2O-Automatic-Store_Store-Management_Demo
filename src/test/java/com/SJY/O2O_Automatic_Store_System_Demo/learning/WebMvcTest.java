@@ -1,6 +1,6 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.learning;
 
-import com.SJY.O2O_Automatic_Store_System_Demo.controller.response.Response;
+import com.SJY.O2O_Automatic_Store_System_Demo.dto.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,4 +1,4 @@
-package com.SJY.O2O_Automatic_Store_System_Demo.controller.response;
+package com.SJY.O2O_Automatic_Store_System_Demo.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

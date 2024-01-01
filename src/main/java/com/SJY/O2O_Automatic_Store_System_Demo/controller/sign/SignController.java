@@ -1,6 +1,6 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.controller.sign;
 
-import com.SJY.O2O_Automatic_Store_System_Demo.controller.response.Response;
+import com.SJY.O2O_Automatic_Store_System_Demo.dto.response.Response;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignInRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignUpRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.service.sign.SignService;
