@@ -65,4 +65,18 @@ public class ExceptionAdvice {
                 .status(HttpStatus.NOT_FOUND)
                 .body(Response.failure(-1008, "요청한 권한 등급을 찾을 수 없습니다."));
     }
+
+    @ExceptionHandler(AuthenticationEntryPointException.class)
+    public ResponseEntity<Response> authenticationEntryPoint() {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(Response.failure(-1001, "인증되지 않은 사용자입니다."));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Response> accessDeniedException() {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(Response.failure(-1002, "접근이 거부되었습니다."));
+    }
 }

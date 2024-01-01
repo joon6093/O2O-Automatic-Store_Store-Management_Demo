@@ -33,9 +33,9 @@ public class JwtHandler {
         }
     }
 
-    private Jws<Claims> parse(String key, String token) {
+    private Jws<Claims> parse(String encodedKey, String token) {
         return Jwts.parser()
-                .setSigningKey(key)
+                .setSigningKey(encodedKey)
                 .parseClaimsJws(untyped(token));
     }
 
