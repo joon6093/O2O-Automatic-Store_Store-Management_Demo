@@ -3,10 +3,7 @@ package com.SJY.O2O_Automatic_Store_System_Demo.controller.sign;
 import com.SJY.O2O_Automatic_Store_System_Demo.advice.ExceptionAdvice;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignInRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignUpRequest;
-import com.SJY.O2O_Automatic_Store_System_Demo.exception.LoginFailureException;
-import com.SJY.O2O_Automatic_Store_System_Demo.exception.MemberEmailAlreadyExistsException;
-import com.SJY.O2O_Automatic_Store_System_Demo.exception.MemberNicknameAlreadyExistsException;
-import com.SJY.O2O_Automatic_Store_System_Demo.exception.RoleNotFoundException;
+import com.SJY.O2O_Automatic_Store_System_Demo.exception.*;
 import com.SJY.O2O_Automatic_Store_System_Demo.service.sign.SignService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,9 +19,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.SignInRequestFactory.createSignInRequest;
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.SignUpRequestFactory.createSignUpRequest;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -121,5 +120,27 @@ class SignControllerAdviceTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void refreshTokenAuthenticationEntryPointException() throws Exception {
+        // given
+        given(signService.refreshToken(anyString())).willThrow(AuthenticationEntryPointException.class);
+
+        // when, then
+        mockMvc.perform(
+                        post("/api/refresh-token")
+                                .header("Authorization", "refreshToken"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.code").value(-1001));
+    }
+
+    @Test
+    void refreshTokenMissingRequestHeaderException() throws Exception {
+        // given, when, then
+        mockMvc.perform(
+                        post("/api/refresh-token"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(-1009));
     }
 }

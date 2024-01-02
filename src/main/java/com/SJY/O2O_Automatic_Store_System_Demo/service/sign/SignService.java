@@ -1,24 +1,21 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.service.sign;
 
+import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.RefreshTokenResponse;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignInRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignInResponse;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignUpRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.RoleType;
-import com.SJY.O2O_Automatic_Store_System_Demo.exception.LoginFailureException;
-import com.SJY.O2O_Automatic_Store_System_Demo.exception.RoleNotFoundException;
-import com.SJY.O2O_Automatic_Store_System_Demo.exception.MemberEmailAlreadyExistsException;
-import com.SJY.O2O_Automatic_Store_System_Demo.exception.MemberNicknameAlreadyExistsException;
+import com.SJY.O2O_Automatic_Store_System_Demo.exception.*;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepository;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.role.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class SignService {
 
     private final MemberRepository memberRepository;
@@ -32,6 +29,7 @@ public class SignService {
         memberRepository.save(SignUpRequest.toEntity(req, roleRepository.findByRoleType(RoleType.ROLE_NORMAL).orElseThrow(RoleNotFoundException::new), passwordEncoder));
     }
 
+    @Transactional(readOnly = true)
     public SignInResponse signIn(SignInRequest req) {
         Member member = memberRepository.findByEmail(req.getEmail()).orElseThrow(LoginFailureException::new);
         validatePassword(req, member);
@@ -56,5 +54,18 @@ public class SignService {
 
     private String createSubject(Member member) {
         return String.valueOf(member.getId());
+    }
+
+    public RefreshTokenResponse refreshToken(String rToken) {
+        validateRefreshToken(rToken);
+        String subject = tokenService.extractRefreshTokenSubject(rToken);
+        String accessToken = tokenService.createAccessToken(subject);
+        return new RefreshTokenResponse(accessToken);
+    }
+
+    private void validateRefreshToken(String rToken) {
+        if(!tokenService.validateRefreshToken(rToken)) {
+            throw new AuthenticationEntryPointException();
+        }
     }
 }

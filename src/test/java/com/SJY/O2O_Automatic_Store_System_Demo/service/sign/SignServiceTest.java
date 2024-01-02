@@ -1,14 +1,12 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.service.sign;
 
+import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.RefreshTokenResponse;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignInRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignInResponse;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignUpRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Role;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.RoleType;
-import com.SJY.O2O_Automatic_Store_System_Demo.exception.LoginFailureException;
-import com.SJY.O2O_Automatic_Store_System_Demo.exception.MemberEmailAlreadyExistsException;
-import com.SJY.O2O_Automatic_Store_System_Demo.exception.MemberNicknameAlreadyExistsException;
-import com.SJY.O2O_Automatic_Store_System_Demo.exception.RoleNotFoundException;
+import com.SJY.O2O_Automatic_Store_System_Demo.exception.*;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepository;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.role.RoleRepository;
 import org.junit.jupiter.api.Test;
@@ -119,4 +117,31 @@ public class SignServiceTest {
                 .isInstanceOf(LoginFailureException.class);
     }
 
+    @Test
+    void refreshTokenTest() {
+        // given
+        String refreshToken = "refreshToken";
+        String subject = "subject";
+        String accessToken = "accessToken";
+        given(tokenService.validateRefreshToken(refreshToken)).willReturn(true);
+        given(tokenService.extractRefreshTokenSubject(refreshToken)).willReturn(subject);
+        given(tokenService.createAccessToken(subject)).willReturn(accessToken);
+
+        // when
+        RefreshTokenResponse res = signService.refreshToken(refreshToken);
+
+        // then
+        assertThat(res.getAccessToken()).isEqualTo(accessToken);
+    }
+
+    @Test
+    void refreshTokenExceptionByInvalidTokenTest() {
+        // given
+        String refreshToken = "refreshToken";
+        given(tokenService.validateRefreshToken(refreshToken)).willReturn(false);
+
+        // when, then
+        assertThatThrownBy(() -> signService.refreshToken(refreshToken))
+                .isInstanceOf(AuthenticationEntryPointException.class);
+    }
 }

@@ -9,12 +9,10 @@ import java.util.Collection;
 @Getter
 public class CustomAuthenticationToken extends AbstractAuthenticationToken {
 
-    private final String type;
     private final CustomUserDetails principal;
 
-    public CustomAuthenticationToken(String type, CustomUserDetails principal, Collection<? extends GrantedAuthority> authorities) {
+    public CustomAuthenticationToken(CustomUserDetails principal, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
-        this.type = type;
         this.principal = principal;
         setAuthenticated(true);
     }

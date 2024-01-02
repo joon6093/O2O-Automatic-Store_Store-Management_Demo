@@ -8,9 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +23,11 @@ public class SignController {
 
     @PostMapping("/api/sign-in")
     public ResponseEntity<Response> signIn(@Valid @RequestBody SignInRequest req) {
-        return ResponseEntity.ok(Response.success(signService.signIn(req)));
+        return ResponseEntity.status(HttpStatus.OK).body(Response.success(signService.signIn(req)));
+    }
+
+    @PostMapping("/api/refresh-token")
+    public ResponseEntity<Response> refreshToken(@RequestHeader(value = "Authorization") String refreshToken) {
+        return ResponseEntity.status(HttpStatus.OK).body(Response.success(signService.refreshToken(refreshToken)));
     }
 }
