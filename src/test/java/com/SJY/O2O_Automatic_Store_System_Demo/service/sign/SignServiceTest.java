@@ -1,5 +1,6 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.service.sign;
 
+import com.SJY.O2O_Automatic_Store_System_Demo.config.tocken.TokenHelper;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.RefreshTokenResponse;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignInRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignInResponse;
@@ -9,11 +10,12 @@ import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.RoleType;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.*;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepository;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.role.RoleRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -26,15 +28,23 @@ import static org.mockito.BDDMockito.*;
 @ExtendWith(MockitoExtension.class)
 public class SignServiceTest {
 
-    @InjectMocks
-    SignService signService;
+    private SignService signService;
     @Mock
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
     @Mock
-    RoleRepository roleRepository;
+    private RoleRepository roleRepository;
     @Mock
-    PasswordEncoder passwordEncoder;
-    @Mock TokenService tokenService;
+    private PasswordEncoder passwordEncoder;
+    @Mock
+    @Qualifier("accessTokenHelper")
+    private TokenHelper accessTokenHelper;
+    @Mock
+    @Qualifier("refreshTokenHelper")
+    private TokenHelper refreshTokenHelper;
+    @BeforeEach
+    void beforeEach() {
+        signService = new SignService(memberRepository, roleRepository, passwordEncoder, accessTokenHelper, refreshTokenHelper);
+    }
 
     @Test
     void signUpTest() {
@@ -85,8 +95,8 @@ public class SignServiceTest {
         // given
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(createMember()));
         given(passwordEncoder.matches(anyString(), anyString())).willReturn(true);
-        given(tokenService.createAccessToken(anyString())).willReturn("access");
-        given(tokenService.createRefreshToken(anyString())).willReturn("refresh");
+        given(accessTokenHelper.createToken(anyString())).willReturn("access");
+        given(refreshTokenHelper.createToken(anyString())).willReturn("refresh");
 
         // when
         SignInResponse res = signService.signIn(new SignInRequest("email", "password"));
@@ -123,9 +133,9 @@ public class SignServiceTest {
         String refreshToken = "refreshToken";
         String subject = "subject";
         String accessToken = "accessToken";
-        given(tokenService.validateRefreshToken(refreshToken)).willReturn(true);
-        given(tokenService.extractRefreshTokenSubject(refreshToken)).willReturn(subject);
-        given(tokenService.createAccessToken(subject)).willReturn(accessToken);
+        given(refreshTokenHelper.validate(refreshToken)).willReturn(true);
+        given(refreshTokenHelper.extractSubject(refreshToken)).willReturn(subject);
+        given(accessTokenHelper.createToken(subject)).willReturn(accessToken);
 
         // when
         RefreshTokenResponse res = signService.refreshToken(refreshToken);
@@ -138,7 +148,7 @@ public class SignServiceTest {
     void refreshTokenExceptionByInvalidTokenTest() {
         // given
         String refreshToken = "refreshToken";
-        given(tokenService.validateRefreshToken(refreshToken)).willReturn(false);
+        given(refreshTokenHelper.validate(refreshToken)).willReturn(false);
 
         // when, then
         assertThatThrownBy(() -> signService.refreshToken(refreshToken))

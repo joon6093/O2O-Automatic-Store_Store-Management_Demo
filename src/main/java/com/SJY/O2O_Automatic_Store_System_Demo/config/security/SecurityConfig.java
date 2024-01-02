@@ -1,8 +1,8 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.config.security;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard.MemberGuard;
-import com.SJY.O2O_Automatic_Store_System_Demo.service.sign.TokenService;
-import lombok.RequiredArgsConstructor;
+import com.SJY.O2O_Automatic_Store_System_Demo.config.tocken.TokenHelper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,13 +17,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@EnableWebSecurity
 @Configuration
-@RequiredArgsConstructor
+@EnableWebSecurity
 public class SecurityConfig {
-    private final TokenService tokenService;
+    private final TokenHelper accessTokenHelper;
     private final CustomUserDetailsService userDetailsService;
     private final MemberGuard memberGuard;
+
+    public SecurityConfig(@Qualifier("accessTokenHelper") TokenHelper accessTokenHelper,
+                          CustomUserDetailsService userDetailsService,
+                          MemberGuard memberGuard) {
+        this.accessTokenHelper = accessTokenHelper;
+        this.userDetailsService = userDetailsService;
+        this.memberGuard = memberGuard;
+    }
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers("/exception/**");
@@ -48,7 +55,7 @@ public class SecurityConfig {
                 .exceptionHandling((exceptionConfig) ->
                         exceptionConfig.authenticationEntryPoint(new CustomAuthenticationEntryPoint()).accessDeniedHandler(new CustomAccessDeniedHandler())
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(tokenService, userDetailsService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(accessTokenHelper, userDetailsService), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
