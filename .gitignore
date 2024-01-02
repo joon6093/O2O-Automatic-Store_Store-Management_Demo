@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### JWT ###
-application-secret.yml
+# application-secret.yml

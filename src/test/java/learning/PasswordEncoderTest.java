@@ -1,4 +1,4 @@
-package com.SJY.O2O_Automatic_Store_System_Demo.learning;
+package learning;
 
 
 import org.junit.jupiter.api.Test;
@@ -9,11 +9,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PasswordEncoderTest {
 
-    // 1
     PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     @Test
-    void encodeWithBcryptTest() { // 2
+    void encodeWithBcryptTest() {
         // given
         String password = "password";
 
@@ -25,7 +24,7 @@ public class PasswordEncoderTest {
     }
 
     @Test
-    void matchTest() { // 3
+    void matchTest() {
         // given
         String password = "password";
         String encodedPassword = passwordEncoder.encode(password);

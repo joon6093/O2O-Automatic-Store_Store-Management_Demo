@@ -3,7 +3,6 @@ package com.SJY.O2O_Automatic_Store_System_Demo.service.sign;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignInRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignInResponse;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignUpRequest;
-import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Role;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.RoleType;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.LoginFailureException;
@@ -21,10 +20,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static java.util.Collections.emptyList;
-import static org.assertj.core.api.Assertions.*;
+import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.SignUpRequestFactory.createSignUpRequest;
+import static com.SJY.O2O_Automatic_Store_System_Demo.factory.entity.MemberFactory.createMember;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class SignServiceTest {
 
@@ -117,15 +117,6 @@ public class SignServiceTest {
         // when, then
         assertThatThrownBy(() -> signService.signIn(new SignInRequest("email", "password")))
                 .isInstanceOf(LoginFailureException.class);
-    }
-
-
-    private SignUpRequest createSignUpRequest() {
-        return new SignUpRequest("email", "password", "username", "nickname");
-    }
-
-    private Member createMember() {
-        return new Member("email", "password", "username", "nickname", emptyList());
     }
 
 }

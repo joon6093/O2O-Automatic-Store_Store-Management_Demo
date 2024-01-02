@@ -1,4 +1,4 @@
-package com.SJY.O2O_Automatic_Store_System_Demo.learning;
+package learning;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.response.Response;
 import org.junit.jupiter.api.BeforeEach;

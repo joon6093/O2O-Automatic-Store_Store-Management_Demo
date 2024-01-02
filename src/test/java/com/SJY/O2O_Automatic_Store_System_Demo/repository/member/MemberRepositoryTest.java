@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.emptyList;
+import static com.SJY.O2O_Automatic_Store_System_Demo.factory.entity.MemberFactory.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
@@ -206,17 +206,4 @@ class MemberRepositoryTest {
         em.flush();
         em.clear();
     }
-
-    private Member createMemberWithRoles(List<Role> roles) {
-        return new Member("email", "password", "username", "nickname", roles);
-    }
-
-    private Member createMember(String email, String password, String username, String nickname) {
-        return new Member(email, password, username, nickname, emptyList());
-    }
-
-    private Member createMember() {
-        return new Member("email", "password", "username", "nickname", emptyList());
-    }
-
 }
