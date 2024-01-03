@@ -29,8 +29,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles(value = "test")
 @Transactional
 class MemberControllerIntegrationTest {
-    @Autowired WebApplicationContext context;
-    @Autowired MockMvc mockMvc;
+    @Autowired
+    WebApplicationContext context;
+    @Autowired
+    MockMvc mockMvc;
 
     @Autowired
     TestInitDB initDB;

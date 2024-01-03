@@ -27,6 +27,14 @@ public class SwaggerConfig {
     }
 
     @Bean
+    public GroupedOpenApi CategoryApi() {
+        return GroupedOpenApi.builder()
+                .group("category")
+                .pathsToMatch("/api/categories/**")
+                .build();
+    }
+
+    @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
