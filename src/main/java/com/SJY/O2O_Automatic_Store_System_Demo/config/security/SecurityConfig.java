@@ -3,6 +3,8 @@ package com.SJY.O2O_Automatic_Store_System_Demo.config.security;
 import com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard.MemberGuard;
 import com.SJY.O2O_Automatic_Store_System_Demo.config.tocken.TokenHelper;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -33,7 +35,13 @@ public class SecurityConfig {
     }
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().requestMatchers("/h2-console/**","/exception/**","/swagger-ui/**","/v3/api-docs/**");
+        return web -> web.ignoring().requestMatchers("/exception/**","/swagger-ui/**","/v3/api-docs/**");
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "spring.h2.console.enabled", havingValue = "true")
+    public WebSecurityCustomizer configureH2ConsoleEnable() {
+        return web -> web.ignoring().requestMatchers(PathRequest.toH2Console());
     }
 
     @Bean
@@ -49,8 +57,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/sign-in", "/api/sign-up","/api/refresh-token").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/members/{id}/**")
-                                .access((authentication, context) ->
-                                new AuthorizationDecision(memberGuard.check(Long.parseLong(context.getVariables().get("id")))))
+                                .access((authentication, context) -> new AuthorizationDecision(memberGuard.check(Long.parseLong(context.getVariables().get("id")))))
+                        .requestMatchers(HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasRole("ADMIN")
                         .anyRequest().hasAnyRole("ADMIN"))
                 .exceptionHandling((exceptionConfig) ->
                         exceptionConfig.authenticationEntryPoint(new CustomAuthenticationEntryPoint()).accessDeniedHandler(new CustomAccessDeniedHandler())
