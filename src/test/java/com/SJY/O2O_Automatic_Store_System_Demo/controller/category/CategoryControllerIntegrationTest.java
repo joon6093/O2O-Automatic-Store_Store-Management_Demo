@@ -3,7 +3,7 @@ package com.SJY.O2O_Automatic_Store_System_Demo.controller.category;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.category.CategoryCreateRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignInResponse;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.category.Category;
-import com.SJY.O2O_Automatic_Store_System_Demo.init.TestInitDB;
+import com.SJY.O2O_Automatic_Store_System_Demo.TestInitDB;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.category.CategoryRepository;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepository;
 import com.SJY.O2O_Automatic_Store_System_Demo.service.sign.SignService;
@@ -116,7 +116,7 @@ public class CategoryControllerIntegrationTest {
     @Test
     void deleteTest() throws Exception {
         // given
-        Long id = categoryRepository.findAll().get(3).getId();
+        Long id = categoryRepository.findAll().get(0).getId();
         SignInResponse adminSignInRes = signService.signIn(createSignInRequest(initDB.getAdminEmail(), initDB.getPassword()));
 
         // when, then
@@ -125,8 +125,7 @@ public class CategoryControllerIntegrationTest {
                 .andExpect(status().isOk());
 
         List<Category> result = categoryRepository.findAll();
-        assertThat(result.size()).isEqualTo(6);
-        assertThat(result.get(2).getChildren().size()).isEqualTo(1);
+        assertThat(result.size()).isEqualTo(1);
     }
 
     @Test

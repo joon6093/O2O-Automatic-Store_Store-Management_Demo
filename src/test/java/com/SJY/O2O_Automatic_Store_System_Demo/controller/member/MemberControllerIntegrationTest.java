@@ -3,7 +3,7 @@ package com.SJY.O2O_Automatic_Store_System_Demo.controller.member;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignInResponse;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.MemberNotFoundException;
-import com.SJY.O2O_Automatic_Store_System_Demo.init.TestInitDB;
+import com.SJY.O2O_Automatic_Store_System_Demo.TestInitDB;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepository;
 import com.SJY.O2O_Automatic_Store_System_Demo.service.sign.SignService;
 import org.junit.jupiter.api.BeforeEach;

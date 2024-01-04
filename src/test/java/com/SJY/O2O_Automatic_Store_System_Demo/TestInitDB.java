@@ -1,4 +1,4 @@
-package com.SJY.O2O_Automatic_Store_System_Demo.init;
+package com.SJY.O2O_Automatic_Store_System_Demo;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.category.Category;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
