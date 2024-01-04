@@ -1,6 +1,7 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.service.member;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.member.MemberDto;
+import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.MemberNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,8 @@ public class MemberService {
 
     @Transactional
     public void delete(Long id) {
-        if(notExistsMember(id)) throw new MemberNotFoundException();
-        memberRepository.deleteById(id);
+        Member member = memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
+        memberRepository.delete(member);
     }
 
     private boolean notExistsMember(Long id) {
