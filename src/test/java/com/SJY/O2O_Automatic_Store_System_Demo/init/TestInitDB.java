@@ -14,10 +14,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.SJY.O2O_Automatic_Store_System_Demo.factory.entity.CategoryFactory.*;
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -69,13 +69,13 @@ public class TestInitDB {
     }
 
     private void initCategory() {
-        Category c1 = categoryRepository.save(new Category("category1", null));
-        Category c2 = categoryRepository.save(new Category("category2", c1));
-        Category c3 = categoryRepository.save(new Category("category3", c1));
-        Category c4 = categoryRepository.save(new Category("category4", c2));
-        Category c5 = categoryRepository.save(new Category("category5", c2));
-        Category c6 = categoryRepository.save(new Category("category6", c4));
-        Category c7 = categoryRepository.save(new Category("category7", c3));
-        Category c8 = categoryRepository.save(new Category("category8", null));
+        Category c1 = categoryRepository.save(createCategoryWithName("category1"));
+        Category c2 = createCategory("category2", c1);
+        Category c3 = createCategory("category3", c1);
+        Category c4 = createCategory("category4", c2);
+        Category c5 = createCategory("category5", c2);
+        Category c6 = createCategory("category6", c4);
+        Category c7 = createCategory("category7", c3);
+        Category c8 = categoryRepository.save(createCategoryWithName("category8"));
     }
 }

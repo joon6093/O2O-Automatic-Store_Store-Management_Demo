@@ -24,7 +24,18 @@ public class CategoryService {
 
     @Transactional
     public void create(CategoryCreateRequest req) {
-        categoryRepository.save(CategoryCreateRequest.toEntity(req, categoryRepository));
+        Category parent = null;
+        if (req.getParentId() != null) {
+            parent = categoryRepository.findById(req.getParentId())
+                    .orElseThrow(CategoryNotFoundException::new);
+        }
+        Category newCategory = new Category(req.getName(), parent);
+        if (parent != null) {
+            parent.addChildCategory(newCategory);
+        }
+        else{
+            categoryRepository.save(newCategory);
+        }
     }
 
     @Transactional
@@ -32,15 +43,11 @@ public class CategoryService {
         Category categoryToDelete = categoryRepository.findById(id)
                 .orElseThrow(CategoryNotFoundException::new);
 
-        Category parentCategory = categoryToDelete.getParent();
-        if (parentCategory != null) {
-            parentCategory.removeChildCategory(categoryToDelete);
+        if (categoryToDelete.getParent() != null) {
+            categoryToDelete .getParent().removeChildCategory(categoryToDelete);
         }
-
-        categoryRepository.delete(categoryToDelete);
-    }
-
-    private boolean notExistsCategory(Long id) {
-        return !categoryRepository.existsById(id);
+        else {
+            categoryRepository.delete(categoryToDelete);
+        }
     }
 }

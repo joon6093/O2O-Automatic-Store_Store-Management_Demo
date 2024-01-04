@@ -9,7 +9,9 @@ public class CategoryFactory {
     }
 
     public static Category createCategory(String name, Category parent) {
-        return new Category(name, parent);
+        Category child = new Category(name, parent);
+        parent.addChildCategory(child);
+        return child;
 
     }
 

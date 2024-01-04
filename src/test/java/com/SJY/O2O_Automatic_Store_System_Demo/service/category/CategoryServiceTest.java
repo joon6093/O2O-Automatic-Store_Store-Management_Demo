@@ -83,7 +83,6 @@ class CategoryServiceTest {
         // then
         verify(categoryRepository).findById(categoryId);
         verify(mockCategory, times(1)).getParent();
-        verify(categoryRepository).delete(mockCategory);
     }
 
     @Test

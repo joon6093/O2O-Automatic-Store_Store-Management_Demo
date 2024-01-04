@@ -18,8 +18,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 class CategoryRepositoryTest {
-    @Autowired CategoryRepository categoryRepository;
-    @PersistenceContext EntityManager em;
+    @Autowired
+    CategoryRepository categoryRepository;
+    @PersistenceContext
+    EntityManager em;
 
     @Test
     void createAndReadTest() {
