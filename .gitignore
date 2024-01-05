@@ -38,3 +38,7 @@ out/
 
 ### JWT ###
 # application-secret.yml
+
+
+### Test Image ###
+/src/test/resources/static/*

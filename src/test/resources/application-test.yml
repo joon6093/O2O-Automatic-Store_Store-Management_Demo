@@ -1,0 +1,3 @@
+upload:
+  image:
+    location: src/test/resources/static/

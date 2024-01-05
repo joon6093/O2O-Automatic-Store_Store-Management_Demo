@@ -9,8 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.net.BindException;
 import java.util.Objects;
 
 @RestControllerAdvice
@@ -23,6 +25,13 @@ public class ExceptionAdvice {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Response.failure(-1000, "오류가 발생하였습니다."));
+    }
+
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<Response> bindException(BindException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(Response.failure(-1003, e.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -93,5 +102,12 @@ public class ExceptionAdvice {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(Response.failure(-1010,"카테고리를 찾을 수 없습니다."));
+    }
+
+    @ExceptionHandler(FileUploadFailureException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response fileUploadFailureException(FileUploadFailureException e) {
+        log.info("e = {}", e.getMessage());
+        return Response.failure(-1014, "파일 업로드에 실패하였습니다.");
     }
 }
