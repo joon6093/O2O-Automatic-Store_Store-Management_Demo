@@ -55,11 +55,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize
                         .requestMatchers(HttpMethod.POST, "/api/sign-in", "/api/sign-up","/api/refresh-token").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/**","/image/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/members/{id}/**")
                                 .access((authentication, context) -> new AuthorizationDecision(memberGuard.check(Long.parseLong(context.getVariables().get("id")))))
                         .requestMatchers(HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/posts").authenticated()
                         .anyRequest().hasAnyRole("ADMIN"))
                 .exceptionHandling((exceptionConfig) ->
                         exceptionConfig.authenticationEntryPoint(new CustomAuthenticationEntryPoint()).accessDeniedHandler(new CustomAccessDeniedHandler())

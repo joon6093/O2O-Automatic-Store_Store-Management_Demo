@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.net.BindException;
@@ -104,10 +103,18 @@ public class ExceptionAdvice {
                 .body(Response.failure(-1010,"카테고리를 찾을 수 없습니다."));
     }
 
+    @ExceptionHandler(UnsupportedImageFormatException.class)
+    public ResponseEntity<Response> unsupportedImageFormatException() {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(Response.failure(-1013, "지원하지 않는 포멧입니다."));
+    }
+
     @ExceptionHandler(FileUploadFailureException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Response fileUploadFailureException(FileUploadFailureException e) {
+    public ResponseEntity<Response> fileUploadFailureException(FileUploadFailureException e) {
         log.info("e = {}", e.getMessage());
-        return Response.failure(-1014, "파일 업로드에 실패하였습니다.");
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(Response.failure(-1014, "파일 업로드에 실패하였습니다."));
     }
 }

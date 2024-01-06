@@ -53,7 +53,7 @@ public class Post extends EntityDate {
         addImages(images);
     }
 
-    private void addImages(List<Image> imageList) { // 5
+    private void addImages(List<Image> imageList) {
         imageList.stream().forEach(image -> {
             this.images.add(image);
             image.setPost(this);

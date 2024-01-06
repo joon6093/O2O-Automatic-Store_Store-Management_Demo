@@ -9,6 +9,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 @Service
 @Slf4j
@@ -28,7 +31,8 @@ public class LocalFileService implements FileService {
     @Override
     public void upload(MultipartFile file, String filename) {
         try {
-            file.transferTo(new File(location + filename));
+            Path targetLocation = new File(location + filename).toPath();
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
         } catch(IOException e) {
             throw new FileUploadFailureException(e);
         }
