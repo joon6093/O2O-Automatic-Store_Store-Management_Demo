@@ -37,4 +37,11 @@ public class PostController {
                 .status(HttpStatus.OK)
                 .body(Response.success(postService.read(id)));
     }
+
+    @Operation(summary = "게시글 삭제", description = "게시글을 삭제한다.")
+    @DeleteMapping("/api/posts/{id}")
+    public ResponseEntity<Response> delete(@Parameter(description = "게시글 id") @PathVariable(name = "id") Long id) {
+        postService.delete(id);
+        return ResponseEntity.ok(Response.success());
+    }
 }

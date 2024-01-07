@@ -122,4 +122,28 @@ class PostServiceTest {
         // when, then
         assertThatThrownBy(() -> postService.read(1L)).isInstanceOf(PostNotFoundException.class);
     }
+
+    // PostServiceTest.java
+    @Test
+    void deleteTest() {
+        // given
+        Post post = createPostWithImages(List.of(createImage(), createImage()));
+        given(postRepository.findById(anyLong())).willReturn(Optional.of(post));
+
+        // when
+        postService.delete(1L);
+
+        // then
+        verify(fileService, times(2)).delete(anyString());
+        verify(postRepository).delete(any());
+    }
+
+    @Test
+    void deleteExceptionByNotFoundPostTest() {
+        // given
+        given(postRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+
+        // when, then
+        assertThatThrownBy(() -> postService.delete(1L)).isInstanceOf(PostNotFoundException.class);
+    }
 }

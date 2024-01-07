@@ -47,4 +47,16 @@ public class PostService {
     public PostDto read(Long id) {
         return PostDto.toDto(postRepository.findByIdWithMemberAndImages(id).orElseThrow(PostNotFoundException::new));
     }
+
+    @Transactional
+    public void delete(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        deleteImages(post.getImages());
+        post.removeImages(post.getImages());
+        postRepository.delete(post);
+    }
+
+    private void deleteImages(List<Image> images) {
+        images.forEach(i -> fileService.delete(i.getUniqueName()));
+    }
 }

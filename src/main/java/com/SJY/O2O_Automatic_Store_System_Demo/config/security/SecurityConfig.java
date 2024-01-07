@@ -1,6 +1,7 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.config.security;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard.MemberGuard;
+import com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard.PostGuard;
 import com.SJY.O2O_Automatic_Store_System_Demo.config.tocken.TokenHelper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -25,13 +26,16 @@ public class SecurityConfig {
     private final TokenHelper accessTokenHelper;
     private final CustomUserDetailsService userDetailsService;
     private final MemberGuard memberGuard;
+    private final PostGuard postGuard;
 
     public SecurityConfig(@Qualifier("accessTokenHelper") TokenHelper accessTokenHelper,
                           CustomUserDetailsService userDetailsService,
-                          MemberGuard memberGuard) {
+                          MemberGuard memberGuard,
+                          PostGuard postGuard) {
         this.accessTokenHelper = accessTokenHelper;
         this.userDetailsService = userDetailsService;
         this.memberGuard = memberGuard;
+        this.postGuard = postGuard;
     }
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -61,6 +65,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/posts").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/posts/{id}/**")
+                            .access((authentication, context) -> new AuthorizationDecision(postGuard.check(Long.parseLong(context.getVariables().get("id")))))
                         .anyRequest().hasAnyRole("ADMIN"))
                 .exceptionHandling((exceptionConfig) ->
                         exceptionConfig.authenticationEntryPoint(new CustomAuthenticationEntryPoint()).accessDeniedHandler(new CustomAccessDeniedHandler())

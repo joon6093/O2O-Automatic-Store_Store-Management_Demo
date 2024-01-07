@@ -22,10 +22,10 @@ import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.PostCreateRequ
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.mockito.Mockito.doThrow;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @ExtendWith(MockitoExtension.class)
 public class PostControllerAdviceTest {
@@ -96,6 +96,18 @@ public class PostControllerAdviceTest {
         // when, then
         mockMvc.perform(
                         get("/api/posts/{id}", 1L))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value(-1012));
+    }
+
+    @Test
+    void deleteExceptionByPostNotFoundTest() throws Exception {
+        // given
+        doThrow(PostNotFoundException.class).when(postService).delete(anyLong());
+
+        // when, then
+        mockMvc.perform(
+                        delete("/api/posts/{id}", 1L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.code").value(-1012));
     }

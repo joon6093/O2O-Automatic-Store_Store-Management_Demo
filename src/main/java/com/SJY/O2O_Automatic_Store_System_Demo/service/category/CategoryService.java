@@ -33,9 +33,7 @@ public class CategoryService {
         if (parent != null) {
             parent.addChildCategory(newCategory);
         }
-        else{
-            categoryRepository.save(newCategory);
-        }
+        categoryRepository.save(newCategory);
     }
 
     @Transactional
@@ -46,8 +44,6 @@ public class CategoryService {
         if (categoryToDelete.getParent() != null) {
             categoryToDelete .getParent().removeChildCategory(categoryToDelete);
         }
-        else {
-            categoryRepository.delete(categoryToDelete);
-        }
+        categoryRepository.delete(categoryToDelete);
     }
 }

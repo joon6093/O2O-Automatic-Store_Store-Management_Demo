@@ -53,10 +53,18 @@ public class Post extends EntityDate {
         addImages(images);
     }
 
-    private void addImages(List<Image> imageList) {
-        imageList.stream().forEach(image -> {
+    public void addImages(List<Image> imageList) {
+        imageList.forEach(image -> {
             this.images.add(image);
             image.setPost(this);
         });
+    }
+
+    public void removeImages(List<Image> imageList) {
+        List<Image> imagesToRemove = new ArrayList<>(imageList);
+        for (Image image : imagesToRemove) {
+            this.images.remove(image);
+            image.setPost(null);
+        }
     }
 }
