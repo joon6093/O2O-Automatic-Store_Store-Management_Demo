@@ -2,6 +2,7 @@ package com.SJY.O2O_Automatic_Store_System_Demo.controller.post;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.aop.AssignMemberId;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostCreateRequest;
+import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostUpdateRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.response.Response;
 import com.SJY.O2O_Automatic_Store_System_Demo.service.post.PostService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,6 +43,18 @@ public class PostController {
     @DeleteMapping("/api/posts/{id}")
     public ResponseEntity<Response> delete(@Parameter(description = "게시글 id") @PathVariable(name = "id") Long id) {
         postService.delete(id);
-        return ResponseEntity.ok(Response.success());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(Response.success());
+    }
+
+    @Operation(summary = "게시글 수정", description = "게시글을 수정한다.")
+    @PutMapping("/api/posts/{id}")
+    public ResponseEntity<Response> update(
+            @Parameter(description = "게시글 id", required = true) @PathVariable(name = "id") Long id,
+            @Valid @ModelAttribute PostUpdateRequest req) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(Response.success(postService.update(id, req)));
     }
 }

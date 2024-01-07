@@ -1,6 +1,7 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.controller.post;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostCreateRequest;
+import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostUpdateRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.service.post.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,10 +15,13 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.PostCreateRequestFactory.createPostCreateRequestWithImages;
+import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.PostUpdateRequestFactory.createPostUpdateRequest;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -90,5 +94,44 @@ class PostControllerTest {
                         delete("/api/posts/{id}", id))
                 .andExpect(status().isOk());
         verify(postService).delete(id);
+    }
+
+    @Test
+    void updateTest() throws Exception{
+        // given
+        ArgumentCaptor<PostUpdateRequest> postUpdateRequestArgumentCaptor = ArgumentCaptor.forClass(PostUpdateRequest.class);
+
+        List<MultipartFile> addedImages = List.of(
+                new MockMultipartFile("test1", "test1.PNG", MediaType.IMAGE_PNG_VALUE, "test1".getBytes()),
+                new MockMultipartFile("test2", "test2.PNG", MediaType.IMAGE_PNG_VALUE, "test2".getBytes())
+        );
+        List<Long> deletedImages = List.of(1L, 2L);
+
+        PostUpdateRequest req = createPostUpdateRequest("title", "content", 1234L, addedImages, deletedImages);
+
+        // when, then
+        mockMvc.perform(
+                        multipart("/api/posts/{id}", 1L)
+                                .file("addedImages", addedImages.get(0).getBytes())
+                                .file("addedImages", addedImages.get(1).getBytes())
+                                .param("deletedImages", String.valueOf(deletedImages.get(0)), String.valueOf(deletedImages.get(1)))
+                                .param("title", req.getTitle())
+                                .param("content", req.getContent())
+                                .param("price", String.valueOf(req.getPrice()))
+                                .with(requestPostProcessor -> {
+                                    requestPostProcessor.setMethod("PUT");
+                                    return requestPostProcessor;
+                                })
+                                .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isOk());
+        verify(postService).update(anyLong(), postUpdateRequestArgumentCaptor.capture());
+
+        PostUpdateRequest capturedRequest = postUpdateRequestArgumentCaptor.getValue();
+        List<MultipartFile> capturedAddedImages = capturedRequest.getAddedImages();
+        assertThat(capturedAddedImages.size()).isEqualTo(2);
+
+        List<Long> capturedDeletedImages = capturedRequest.getDeletedImages();
+        assertThat(capturedDeletedImages.size()).isEqualTo(2);
+        assertThat(capturedDeletedImages).contains(deletedImages.get(0), deletedImages.get(1));
     }
 }

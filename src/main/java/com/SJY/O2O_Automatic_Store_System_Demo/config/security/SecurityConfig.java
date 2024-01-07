@@ -65,6 +65,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/posts").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/posts/{id}/**")
+                            .access((authentication, context) -> new AuthorizationDecision(postGuard.check(Long.parseLong(context.getVariables().get("id")))))
                         .requestMatchers(HttpMethod.DELETE, "/api/posts/{id}/**")
                             .access((authentication, context) -> new AuthorizationDecision(postGuard.check(Long.parseLong(context.getVariables().get("id")))))
                         .anyRequest().hasAnyRole("ADMIN"))
