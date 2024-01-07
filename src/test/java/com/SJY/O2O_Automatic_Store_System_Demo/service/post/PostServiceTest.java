@@ -1,8 +1,11 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.service.post;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostCreateRequest;
+import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostDto;
+import com.SJY.O2O_Automatic_Store_System_Demo.entity.post.Post;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.CategoryNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.MemberNotFoundException;
+import com.SJY.O2O_Automatic_Store_System_Demo.exception.PostNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.UnsupportedImageFormatException;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.category.CategoryRepository;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepository;
@@ -20,12 +23,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.PostCreateRequestFactory.*;
+import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.PostCreateRequestFactory.createPostCreateRequest;
+import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.PostCreateRequestFactory.createPostCreateRequestWithImages;
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.entity.CategoryFactory.createCategory;
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.entity.ImageFactory.createImage;
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.entity.MemberFactory.createMember;
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.entity.PostFactory.createPostWithImages;
 import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
@@ -93,5 +98,28 @@ class PostServiceTest {
 
         // when, then
         assertThatThrownBy(() -> postService.create(req)).isInstanceOf(UnsupportedImageFormatException.class);
+    }
+
+    @Test
+    void readTest() {
+        // given
+        Post post = createPostWithImages(List.of(createImage(), createImage()));
+        given(postRepository.findByIdWithMemberAndImages(anyLong())).willReturn(Optional.of(post));
+
+        // when
+        PostDto postDto = postService.read(1L);
+
+        // then
+        assertThat(postDto.getTitle()).isEqualTo(post.getTitle());
+        assertThat(postDto.getImages().size()).isEqualTo(post.getImages().size());
+    }
+
+    @Test
+    void readExceptionByPostNotFoundTest() {
+        // given
+        given(postRepository.findByIdWithMemberAndImages(anyLong())).willReturn(Optional.ofNullable(null));
+
+        // when, then
+        assertThatThrownBy(() -> postService.read(1L)).isInstanceOf(PostNotFoundException.class);
     }
 }

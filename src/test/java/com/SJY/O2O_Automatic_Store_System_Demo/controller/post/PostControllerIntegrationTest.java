@@ -26,11 +26,14 @@ import java.util.List;
 
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.PostCreateRequestFactory.createPostCreateRequest;
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.SignInRequestFactory.createSignInRequest;
+import static com.SJY.O2O_Automatic_Store_System_Demo.factory.entity.PostFactory.createPost;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles(value = "test")
@@ -109,5 +112,16 @@ public class PostControllerIntegrationTest {
                                 .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/exception/entry-point"));
+    }
+
+    @Test
+    void readTest() throws Exception {
+        // given
+        Post post = postRepository.save(createPost(member, category));
+
+        // when, then
+        mockMvc.perform(
+                        get("/api/posts/{id}", post.getId()))
+                .andExpect(status().isOk());
     }
 }

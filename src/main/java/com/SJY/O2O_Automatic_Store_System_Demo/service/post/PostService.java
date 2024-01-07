@@ -2,6 +2,7 @@ package com.SJY.O2O_Automatic_Store_System_Demo.service.post;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostCreateRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostCreateResponse;
+import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostDto;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.post.Image;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.post.Post;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.category.CategoryRepository;
@@ -12,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.SJY.O2O_Automatic_Store_System_Demo.exception.PostNotFoundException;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -41,5 +42,9 @@ public class PostService {
 
     private void uploadImages(List<Image> images, List<MultipartFile> fileImages) {
         IntStream.range(0, images.size()).forEach(i -> fileService.upload(fileImages.get(i), images.get(i).getUniqueName()));
+    }
+
+    public PostDto read(Long id) {
+        return PostDto.toDto(postRepository.findByIdWithMemberAndImages(id).orElseThrow(PostNotFoundException::new));
     }
 }

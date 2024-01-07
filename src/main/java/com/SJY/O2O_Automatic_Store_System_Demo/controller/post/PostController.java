@@ -5,15 +5,14 @@ import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostCreateRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.response.Response;
 import com.SJY.O2O_Automatic_Store_System_Demo.service.post.PostService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Post", description = "게시글 관련 API")
 @RestController
@@ -31,4 +30,11 @@ public class PostController {
                 .body(Response.success(postService.create(req)));
     }
 
+    @Operation(summary = "게시글 조회", description = "게시글을 조회한다.")
+    @GetMapping("/api/posts/{id}")
+    public ResponseEntity<Response> read(@Parameter(description = "게시글 id") @PathVariable(name = "id") Long id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(Response.success(postService.read(id)));
+    }
 }

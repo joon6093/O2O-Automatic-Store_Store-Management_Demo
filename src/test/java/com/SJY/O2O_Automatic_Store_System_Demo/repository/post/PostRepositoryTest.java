@@ -134,6 +134,23 @@ class PostRepositoryTest {
         assertThat(result.size()).isZero();
     }
 
+    @Test
+    void findByIdWithMemberAndImagesTest() {
+        // given
+        Post post = postRepository.save(createPostWithImages(member, category, List.of(createImage(), createImage())));
+        clear();
+
+        // when
+        Post foundPost = postRepository.findByIdWithMemberAndImages(post.getId()).orElseThrow(PostNotFoundException::new);
+        clear();
+
+        // then
+        Member foundMember = foundPost.getMember();
+        assertThat(foundMember.getEmail()).isEqualTo(member.getEmail());
+        List<Image> foundImage = foundPost.getImages();
+        assertThat(foundImage.size()).isEqualTo(2);
+    }
+
     void clear() {
         em.flush();
         em.clear();

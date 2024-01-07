@@ -103,6 +103,13 @@ public class ExceptionAdvice {
                 .body(Response.failure(-1010,"카테고리를 찾을 수 없습니다."));
     }
 
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity<Response> postNotFoundException() {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(Response.failure(-1012, "요청한 게시글을 찾을 수 없습니다."));
+    }
+
     @ExceptionHandler(UnsupportedImageFormatException.class)
     public ResponseEntity<Response> unsupportedImageFormatException() {
         return ResponseEntity
