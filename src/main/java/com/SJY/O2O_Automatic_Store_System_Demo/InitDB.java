@@ -1,12 +1,14 @@
 package com.SJY.O2O_Automatic_Store_System_Demo;
 
+import com.SJY.O2O_Automatic_Store_System_Demo.entity.category.Category;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Role;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.RoleType;
+import com.SJY.O2O_Automatic_Store_System_Demo.entity.post.Post;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.RoleNotFoundException;
-import com.SJY.O2O_Automatic_Store_System_Demo.entity.category.Category;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.category.CategoryRepository;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepository;
+import com.SJY.O2O_Automatic_Store_System_Demo.repository.post.PostRepository;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.role.RoleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Component
@@ -28,6 +31,7 @@ import java.util.stream.Stream;
 public class InitDB {
     private final RoleRepository roleRepository;
     private final MemberRepository memberRepository;
+    private final PostRepository postRepository;
     private final PasswordEncoder passwordEncoder;
     private final CategoryRepository categoryRepository;
 
@@ -39,6 +43,7 @@ public class InitDB {
         initTestAdmin();
         initTestMember();
         initCategory();
+        initPost();
     }
 
     private void initRole() {
@@ -73,5 +78,14 @@ public class InitDB {
         Category c6 = categoryRepository.save(new Category("category6", c4));
         Category c7 = categoryRepository.save(new Category("category7", c3));
         Category c8 = categoryRepository.save(new Category("category8", null));
+    }
+
+    private void initPost() {
+        Member member = memberRepository.findAll().get(1);
+        Category category = categoryRepository.findAll().get(0);
+        IntStream.range(0, 100)
+                .forEach(i -> postRepository.save(
+                        new Post("title" + i, "content" + i, Long.valueOf(i), member, category, List.of())
+                ));
     }
 }

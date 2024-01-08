@@ -1,5 +1,6 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.repository.role;
 
+import com.SJY.O2O_Automatic_Store_System_Demo.config.QuerydslConfig;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Role;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.RoleNotFoundException;
 import jakarta.persistence.EntityManager;
@@ -7,12 +8,14 @@ import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.entity.RoleFactory.createRole;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 @DataJpaTest
+@Import(QuerydslConfig.class)
 class RoleRepositoryTest {
     @Autowired
     RoleRepository roleRepository;

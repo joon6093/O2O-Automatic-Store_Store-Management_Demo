@@ -1,5 +1,6 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.repository.category;
 
+import com.SJY.O2O_Automatic_Store_System_Demo.config.QuerydslConfig;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.category.Category;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.CategoryNotFoundException;
 import jakarta.persistence.EntityManager;
@@ -7,6 +8,7 @@ import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
@@ -17,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
+@Import(QuerydslConfig.class)
 class CategoryRepositoryTest {
     @Autowired
     CategoryRepository categoryRepository;

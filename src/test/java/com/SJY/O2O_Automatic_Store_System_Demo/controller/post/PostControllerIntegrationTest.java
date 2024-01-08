@@ -2,6 +2,7 @@ package com.SJY.O2O_Automatic_Store_System_Demo.controller.post;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.TestInitDB;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostCreateRequest;
+import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostReadCondition;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignInResponse;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.category.Category;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
@@ -28,6 +29,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.PostCreateRequestFactory.createPostCreateRequest;
+import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.PostReadConditionFactory.createPostReadCondition;
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.SignInRequestFactory.createSignInRequest;
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.entity.PostFactory.createPost;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -293,5 +295,20 @@ public class PostControllerIntegrationTest {
                                 .header("Authorization", notOwnerSignInRes.getAccessToken()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/exception/access-denied"));
+    }
+
+    @Test
+    void readAllTest() throws Exception {
+        // given
+        PostReadCondition cond = createPostReadCondition(0, 1);
+
+        // when, then
+        mockMvc.perform(
+                        get("/api/posts")
+                                .param("page", String.valueOf(cond.getPage()))
+                                .param("size", String.valueOf(cond.getSize()))
+                                .param("categoryId", String.valueOf(1), String.valueOf(2))
+                                .param("memberId", String.valueOf(1), String.valueOf(2)))
+                .andExpect(status().isOk());
     }
 }

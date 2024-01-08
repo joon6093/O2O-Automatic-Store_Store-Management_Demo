@@ -1,5 +1,6 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.repository.post;
 
+import com.SJY.O2O_Automatic_Store_System_Demo.config.QuerydslConfig;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostUpdateRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.category.Category;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -31,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
+@Import(QuerydslConfig.class)
 class PostRepositoryTest {
     @Autowired
     PostRepository postRepository;

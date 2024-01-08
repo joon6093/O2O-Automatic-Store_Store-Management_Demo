@@ -1,5 +1,6 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.repository.member;
 
+import com.SJY.O2O_Automatic_Store_System_Demo.config.QuerydslConfig;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.MemberRole;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Role;
@@ -11,17 +12,20 @@ import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.SJY.O2O_Automatic_Store_System_Demo.factory.entity.MemberFactory.*;
+import static com.SJY.O2O_Automatic_Store_System_Demo.factory.entity.MemberFactory.createMember;
+import static com.SJY.O2O_Automatic_Store_System_Demo.factory.entity.MemberFactory.createMemberWithRoles;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 @DataJpaTest
+@Import(QuerydslConfig.class)
 class MemberRepositoryTest {
 
     @Autowired

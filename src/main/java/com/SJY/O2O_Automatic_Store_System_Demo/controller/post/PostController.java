@@ -2,6 +2,7 @@ package com.SJY.O2O_Automatic_Store_System_Demo.controller.post;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.aop.AssignMemberId;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostCreateRequest;
+import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostReadCondition;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostUpdateRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.response.Response;
 import com.SJY.O2O_Automatic_Store_System_Demo.service.post.PostService;
@@ -56,5 +57,13 @@ public class PostController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(Response.success(postService.update(id, req)));
+    }
+
+    @Operation(summary = "게시글 목록 조회", description = "게시글 목록을 조회한다.")
+    @GetMapping("/api/posts")
+    public ResponseEntity<Response> readAll(@Valid PostReadCondition cond) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(Response.success(postService.readAll(cond)));
     }
 }

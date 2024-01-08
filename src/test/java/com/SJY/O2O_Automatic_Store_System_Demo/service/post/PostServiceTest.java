@@ -2,6 +2,7 @@ package com.SJY.O2O_Automatic_Store_System_Demo.service.post;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostCreateRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostDto;
+import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostListDto;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostUpdateRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.post.Image;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.post.Post;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -27,6 +29,7 @@ import java.util.stream.IntStream;
 
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.PostCreateRequestFactory.createPostCreateRequest;
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.PostCreateRequestFactory.createPostCreateRequestWithImages;
+import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.PostReadConditionFactory.createPostReadCondition;
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.PostUpdateRequestFactory.createPostUpdateRequest;
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.entity.CategoryFactory.createCategory;
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.entity.ImageFactory.createImage;
@@ -182,5 +185,17 @@ class PostServiceTest {
         // when, then
         assertThatThrownBy(() -> postService.update(1L, createPostUpdateRequest("title", "content", 1234L, List.of(), List.of())))
                 .isInstanceOf(PostNotFoundException.class);
+    }
+
+    @Test
+    void readAllTest() {
+        // given
+        given(postRepository.findAllByCondition(any())).willReturn(Page.empty());
+
+        // when
+        PostListDto postListDto = postService.readAll(createPostReadCondition(1, 1));
+
+        // then
+        assertThat(postListDto.getPostList().size()).isZero();
     }
 }
