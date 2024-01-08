@@ -41,7 +41,7 @@ class CategoryServiceTest {
         Category parent2 = CategoryFactory.createCategoryWithName("parent2");
 
         List<Category> categories = List.of(parent1, child1, child2, parent2);
-        given(categoryRepository.findByParentIsNull()).willReturn(List.of(parent1, parent2));
+        given(categoryRepository.findTopLevelCategories()).willReturn(List.of(parent1, parent2));
 
         // when
         List<CategoryDto> result = categoryService.readAll();

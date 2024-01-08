@@ -16,14 +16,18 @@ public class PostFactory {
     }
 
     public static Post createPost(Member member, Category category) {
-        return new Post("title", "content", 1000L, member, category, List.of());
+        return new Post("title", "content", 1000L, member, category);
     }
 
     public static Post createPostWithImages(Member member, Category category, List<Image> images) {
-        return new Post("title", "content", 1000L, member, category, images);
+        Post post = new Post("title", "content", 1000L, member, category);
+        post.addImages(images);
+        return post;
     }
 
     public static Post createPostWithImages(List<Image> images) {
-        return new Post("title", "content", 1000L, createMember(), createCategory(), images);
+        Post post = new Post("title", "content", 1000L, createMember(), createCategory());
+        post.addImages(images);
+        return post;
     }
 }

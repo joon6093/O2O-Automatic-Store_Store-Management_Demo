@@ -4,7 +4,6 @@ import com.SJY.O2O_Automatic_Store_System_Demo.entity.category.Category;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Role;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.RoleType;
-import com.SJY.O2O_Automatic_Store_System_Demo.entity.post.Post;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.RoleNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.category.CategoryRepository;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepository;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Component
@@ -43,7 +41,6 @@ public class InitDB {
         initTestAdmin();
         initTestMember();
         initCategory();
-        initPost();
     }
 
     private void initRole() {
@@ -70,22 +67,19 @@ public class InitDB {
     }
 
     private void initCategory() {
-        Category c1 = categoryRepository.save(new Category("category1", null));
-        Category c2 = categoryRepository.save(new Category("category2", c1));
-        Category c3 = categoryRepository.save(new Category("category3", c1));
-        Category c4 = categoryRepository.save(new Category("category4", c2));
-        Category c5 = categoryRepository.save(new Category("category5", c2));
-        Category c6 = categoryRepository.save(new Category("category6", c4));
-        Category c7 = categoryRepository.save(new Category("category7", c3));
-        Category c8 = categoryRepository.save(new Category("category8", null));
-    }
-
-    private void initPost() {
-        Member member = memberRepository.findAll().get(1);
-        Category category = categoryRepository.findAll().get(0);
-        IntStream.range(0, 100)
-                .forEach(i -> postRepository.save(
-                        new Post("title" + i, "content" + i, Long.valueOf(i), member, category, List.of())
-                ));
+        Category c1 = categoryRepository.save(new Category("category1"));
+        Category c2 = categoryRepository.save(new Category("category2"));
+        c1.addChildCategory(c2);
+        Category c3 = categoryRepository.save(new Category("category3"));
+        c1.addChildCategory(c3);
+        Category c4 = categoryRepository.save(new Category("category4"));
+        c2.addChildCategory(c4);
+        Category c5 = categoryRepository.save(new Category("category5"));
+        c2.addChildCategory(c5);
+        Category c6 = categoryRepository.save(new Category("category6"));
+        c4.addChildCategory(c6);
+        Category c7 = categoryRepository.save(new Category("category7"));
+        c3.addChildCategory(c7);
+        Category c8 = categoryRepository.save(new Category("category8"));
     }
 }

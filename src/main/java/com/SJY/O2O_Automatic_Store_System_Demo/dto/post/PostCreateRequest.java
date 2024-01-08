@@ -48,13 +48,14 @@ public class PostCreateRequest {
     @Schema(description = "이미지", type = "array", format = "binary")
     private List<MultipartFile> images = new ArrayList<>();
     public static Post toEntity(PostCreateRequest req, MemberRepository memberRepository, CategoryRepository categoryRepository) {
-        return new Post(
+        Post post = new Post(
                 req.title,
                 req.content,
                 req.price,
                 memberRepository.findById(req.getMemberId()).orElseThrow(MemberNotFoundException::new),
-                categoryRepository.findById(req.getCategoryId()).orElseThrow(CategoryNotFoundException::new),
-                req.images.stream().map(i -> new Image(i.getOriginalFilename())).collect(toList())
+                categoryRepository.findById(req.getCategoryId()).orElseThrow(CategoryNotFoundException::new)
         );
+        post.addImages(req.images.stream().map(i -> new Image(i.getOriginalFilename())).collect(toList()));
+        return post;
     }
 }

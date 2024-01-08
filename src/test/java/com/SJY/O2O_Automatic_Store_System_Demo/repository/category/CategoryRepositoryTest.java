@@ -96,7 +96,7 @@ class CategoryRepositoryTest {
         Category rootCategory2 = categoryRepository.save(createCategoryWithName("Root Category 2"));
 
         // when
-        List<Category> result = categoryRepository.findByParentIsNull();
+        List<Category> result = categoryRepository.findTopLevelCategories();
 
         // then
         assertThat(result).hasSize(2);

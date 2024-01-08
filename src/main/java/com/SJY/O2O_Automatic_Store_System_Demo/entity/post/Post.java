@@ -48,20 +48,19 @@ public class Post extends EntityDate {
     private Category category;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private final List<Image> images = new ArrayList<>();
+    private List<Image> images = new ArrayList<>();
 
-    public Post(String title, String content, Long price, Member member, Category category, List<Image> images) {
+    public Post(String title, String content, Long price, Member member, Category category) {
         this.title = title;
         this.content = content;
         this.price = price;
         this.member = member;
         this.category = category;
-        addImages(images);
     }
 
     public void addImages(List<Image> imageList) {
         imageList.forEach(image -> {
-            this.images.add(image);
+            getImages().add(image);
             image.setPost(this);
         });
     }
@@ -109,7 +108,7 @@ public class Post extends EntityDate {
     public void removeImages(List<Image> imageList) {
         List<Image> imagesToRemove = new ArrayList<>(imageList);
         for (Image image : imagesToRemove) {
-            this.images.remove(image);
+            getImages().remove(image);
             image.setPost(null);
         }
     }

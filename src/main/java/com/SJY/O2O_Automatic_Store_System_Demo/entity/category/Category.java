@@ -24,18 +24,24 @@ public class Category {
     @JoinColumn(name = "parent_id")
     private Category parent;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE)
     private final Set<Category> children = new HashSet<>();
 
-    public Category(String name, Category parent) {
+    public Category(String name) {
         this.name = name;
+    }
+
+    public void setParent(Category parent) {
         this.parent = parent;
     }
+
     public void addChildCategory(Category child) {
         children.add(child);
+        child.setParent(this);
     }
 
     public void removeChildCategory(Category child) {
         children.remove(child);
+        child.setParent(null);
     }
 }

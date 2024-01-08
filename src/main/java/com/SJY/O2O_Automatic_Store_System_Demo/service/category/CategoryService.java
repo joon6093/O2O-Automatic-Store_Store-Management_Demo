@@ -18,7 +18,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     public List<CategoryDto> readAll() {
-        List<Category> rootCategories = categoryRepository.findByParentIsNull();
+        List<Category> rootCategories = categoryRepository.findTopLevelCategories();
         return CategoryDto.toDtoList(rootCategories);
     }
 
@@ -29,7 +29,7 @@ public class CategoryService {
             parent = categoryRepository.findById(req.getParentId())
                     .orElseThrow(CategoryNotFoundException::new);
         }
-        Category newCategory = new Category(req.getName(), parent);
+        Category newCategory = new Category(req.getName());
         if (parent != null) {
             parent.addChildCategory(newCategory);
         }

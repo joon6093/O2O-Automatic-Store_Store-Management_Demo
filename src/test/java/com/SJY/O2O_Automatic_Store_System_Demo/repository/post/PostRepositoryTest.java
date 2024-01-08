@@ -116,7 +116,8 @@ class PostRepositoryTest {
     @Test
     void deleteCascadeByMemberTest() {
         // given
-        postRepository.save(createPostWithImages(member, category, List.of(createImage(), createImage())));
+        Post post = createPostWithImages(member, category, List.of(createImage(), createImage()));
+        postRepository.save(post);
         clear();
 
         // when
