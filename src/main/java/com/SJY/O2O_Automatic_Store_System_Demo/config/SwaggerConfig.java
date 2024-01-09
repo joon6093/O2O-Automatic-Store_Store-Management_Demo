@@ -43,6 +43,14 @@ public class SwaggerConfig {
     }
 
     @Bean
+    public GroupedOpenApi CommentApi() {
+        return GroupedOpenApi.builder()
+                .group("comment")
+                .pathsToMatch("/api/comments/**")
+                .build();
+    }
+
+    @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()

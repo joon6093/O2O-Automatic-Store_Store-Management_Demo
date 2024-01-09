@@ -1,11 +1,14 @@
 package com.SJY.O2O_Automatic_Store_System_Demo;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.category.Category;
+import com.SJY.O2O_Automatic_Store_System_Demo.entity.comment.Comment;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Role;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.RoleType;
+import com.SJY.O2O_Automatic_Store_System_Demo.entity.post.Post;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.RoleNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.category.CategoryRepository;
+import com.SJY.O2O_Automatic_Store_System_Demo.repository.comment.CommentRepository;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepository;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.post.PostRepository;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.role.RoleRepository;
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Component
@@ -32,6 +36,7 @@ public class InitDB {
     private final PostRepository postRepository;
     private final PasswordEncoder passwordEncoder;
     private final CategoryRepository categoryRepository;
+    private final CommentRepository commentRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     @Transactional
@@ -41,6 +46,8 @@ public class InitDB {
         initTestAdmin();
         initTestMember();
         initCategory();
+        initPost();
+        initComment();
     }
 
     private void initRole() {
@@ -81,5 +88,33 @@ public class InitDB {
         Category c7 = categoryRepository.save(new Category("category7"));
         c3.addChildCategory(c7);
         Category c8 = categoryRepository.save(new Category("category8"));
+    }
+
+    private void initPost() {
+        Member member = memberRepository.findAll().get(1);
+        Category category = categoryRepository.findAll().get(0);
+        IntStream.range(0, 100)
+                .forEach(i -> postRepository.save(
+                        new Post("title" + i, "content" + i, (long) i, member, category)
+                ));
+    }
+
+    private void initComment() {
+        Member member = memberRepository.findAll().get(0);
+        Post post = postRepository.findAll().get(0);
+        Comment c1 = commentRepository.save(new Comment("content", member, post));
+        Comment c2 = commentRepository.save(new Comment("content", member, post));
+        c1.addChildComment(c2);
+        Comment c3 = commentRepository.save(new Comment("content", member, post));
+        c1.addChildComment(c3);
+        Comment c4 = commentRepository.save(new Comment("content", member, post));
+        c2.addChildComment(c4);
+        Comment c5 = commentRepository.save(new Comment("content", member, post));
+        c2.addChildComment(c5);
+        Comment c6 = commentRepository.save(new Comment("content", member, post));
+        c4.addChildComment(c6);
+        Comment c7 = commentRepository.save(new Comment("content", member, post));
+        c3.addChildComment(c7);
+        Comment c8 = commentRepository.save(new Comment("content", member, post));
     }
 }

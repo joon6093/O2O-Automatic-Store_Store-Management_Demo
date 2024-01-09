@@ -1,5 +1,6 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.config.security;
 
+import com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard.CommentGuard;
 import com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard.MemberGuard;
 import com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard.PostGuard;
 import com.SJY.O2O_Automatic_Store_System_Demo.config.tocken.TokenHelper;
@@ -27,15 +28,18 @@ public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final MemberGuard memberGuard;
     private final PostGuard postGuard;
+    private final CommentGuard commentGuard;
 
     public SecurityConfig(@Qualifier("accessTokenHelper") TokenHelper accessTokenHelper,
                           CustomUserDetailsService userDetailsService,
                           MemberGuard memberGuard,
-                          PostGuard postGuard) {
+                          PostGuard postGuard,
+                          CommentGuard commentGuard) {
         this.accessTokenHelper = accessTokenHelper;
         this.userDetailsService = userDetailsService;
         this.memberGuard = memberGuard;
         this.postGuard = postGuard;
+        this.commentGuard = commentGuard;
     }
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -69,7 +73,10 @@ public class SecurityConfig {
                             .access((authentication, context) -> new AuthorizationDecision(postGuard.check(Long.parseLong(context.getVariables().get("id")))))
                         .requestMatchers(HttpMethod.DELETE, "/api/posts/{id}/**")
                             .access((authentication, context) -> new AuthorizationDecision(postGuard.check(Long.parseLong(context.getVariables().get("id")))))
-                        .anyRequest().hasAnyRole("ADMIN"))
+                        .requestMatchers(HttpMethod.POST, "/api/comments").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/comments/{id}/**")
+                            .access((authentication, context) -> new AuthorizationDecision(commentGuard.check(Long.parseLong(context.getVariables().get("id")))))
+                                .anyRequest().hasAnyRole("ADMIN"))
                 .exceptionHandling((exceptionConfig) ->
                         exceptionConfig.authenticationEntryPoint(new CustomAuthenticationEntryPoint()).accessDeniedHandler(new CustomAccessDeniedHandler())
                 )

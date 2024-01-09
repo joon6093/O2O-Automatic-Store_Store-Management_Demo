@@ -19,8 +19,6 @@ public class MemberDto {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdAt;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime modifiedAt;
 
     public static MemberDto toDto(Member member) {
         return new MemberDto(
@@ -28,8 +26,7 @@ public class MemberDto {
                 member.getEmail(),
                 member.getUsername(),
                 member.getNickname(),
-                member.getCreatedAt(),
-                member.getModifiedAt()
+                member.getCreatedAt()
         );
     }
 }

@@ -1,6 +1,7 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.service.comment;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.comment.CommentCreateRequest;
+import com.SJY.O2O_Automatic_Store_System_Demo.dto.comment.CommentCreateResponse;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.comment.CommentDto;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.comment.CommentReadCondition;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.comment.Comment;
@@ -32,7 +33,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void create(CommentCreateRequest req) {
+    public CommentCreateResponse create(CommentCreateRequest req) {
         Comment comment = new Comment(
                 req.getContent(),
                 memberRepository.findById(req.getMemberId()).orElseThrow(MemberNotFoundException::new),
@@ -44,6 +45,7 @@ public class CommentService {
 
         }
         commentRepository.save(comment);
+        return new CommentCreateResponse(comment.getId());
     }
 
     @Transactional
