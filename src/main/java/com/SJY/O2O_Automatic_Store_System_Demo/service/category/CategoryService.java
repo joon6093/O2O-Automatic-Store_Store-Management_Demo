@@ -24,26 +24,23 @@ public class CategoryService {
 
     @Transactional
     public void create(CategoryCreateRequest req) {
-        Category parent = null;
+        Category category = new Category(req.getName());
         if (req.getParentId() != null) {
-            parent = categoryRepository.findById(req.getParentId())
+            Category parent  = categoryRepository.findById(req.getParentId())
                     .orElseThrow(CategoryNotFoundException::new);
+            parent.addChildCategory(category);
         }
-        Category newCategory = new Category(req.getName());
-        if (parent != null) {
-            parent.addChildCategory(newCategory);
-        }
-        categoryRepository.save(newCategory);
+        categoryRepository.save(category);
     }
 
     @Transactional
     public void delete(Long id) {
-        Category categoryToDelete = categoryRepository.findById(id)
+        Category category = categoryRepository.findById(id)
                 .orElseThrow(CategoryNotFoundException::new);
 
-        if (categoryToDelete.getParent() != null) {
-            categoryToDelete .getParent().removeChildCategory(categoryToDelete);
+        if (category.getParent() != null) {
+            category .getParent().removeChildCategory(category);
         }
-        categoryRepository.delete(categoryToDelete);
+        categoryRepository.delete(category);
     }
 }

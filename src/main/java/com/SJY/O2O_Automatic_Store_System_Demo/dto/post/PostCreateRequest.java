@@ -7,6 +7,7 @@ import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepositor
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,6 +39,7 @@ public class PostCreateRequest {
     private Long price;
 
     @Schema(hidden = true)
+    @Null
     private Long memberId;
 
     @Schema(description = "카테고리 아이디", example = "3", required = true)
