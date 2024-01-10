@@ -131,4 +131,11 @@ public class ExceptionAdvice {
                 .status(HttpStatus.NOT_FOUND)
                 .body(Response.failure(-1015, "요청한 댓글을 찾을 수 없습니다."));
     }
+
+    @ExceptionHandler(MessageNotFoundException.class)
+    public ResponseEntity<Response> messageNotFoundException() {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(Response.failure(-1016, "존재하지 않는 쪽지입니다."));
+    }
 }
