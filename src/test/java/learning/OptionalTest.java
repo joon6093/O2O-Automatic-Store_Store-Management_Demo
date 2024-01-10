@@ -12,8 +12,8 @@ public class OptionalTest {
     @Test
     void doseNotInvokeOptionalInnerFunctionByOuterNullValueTest() {
         // given, when
-        Long result = Optional.ofNullable(null)
-                .map(id -> Optional.ofNullable((Long)null).orElseThrow(RuntimeException::new))
+        Long result = Optional.empty()
+                .map(id -> Optional.<Long>empty().orElseThrow(RuntimeException::new))
                 .orElse(5L);
 
         // then

@@ -1,7 +1,6 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.factory.dto;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.category.CategoryCreateRequest;
-
 public class CategoryCreateRequestFactory {
     public static CategoryCreateRequest createCategoryCreateRequest() {
         return new CategoryCreateRequest("category", null);

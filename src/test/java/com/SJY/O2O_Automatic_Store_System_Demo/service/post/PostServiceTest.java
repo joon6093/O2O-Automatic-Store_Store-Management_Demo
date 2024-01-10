@@ -78,7 +78,7 @@ class PostServiceTest {
     @Test
     void createExceptionByMemberNotFoundTest() {
         // given
-        given(memberRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+        given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> postService.create(createPostCreateRequest())).isInstanceOf(MemberNotFoundException.class);
@@ -88,7 +88,7 @@ class PostServiceTest {
     void createExceptionByCategoryNotFoundTest() {
         // given
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(createMember()));
-        given(categoryRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+        given(categoryRepository.findById(anyLong())).willReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> postService.create(createPostCreateRequest())).isInstanceOf(CategoryNotFoundException.class);
@@ -124,7 +124,7 @@ class PostServiceTest {
     @Test
     void readExceptionByPostNotFoundTest() {
         // given
-        given(postRepository.findByIdWithMemberAndImages(anyLong())).willReturn(Optional.ofNullable(null));
+        given(postRepository.findByIdWithMemberAndImages(anyLong())).willReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> postService.read(1L)).isInstanceOf(PostNotFoundException.class);
@@ -148,7 +148,7 @@ class PostServiceTest {
     @Test
     void deleteExceptionByNotFoundPostTest() {
         // given
-        given(postRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+        given(postRepository.findById(anyLong())).willReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> postService.delete(1L)).isInstanceOf(PostNotFoundException.class);
@@ -180,7 +180,7 @@ class PostServiceTest {
     @Test
     void updateExceptionByPostNotFoundTest() {
         // given
-        given(postRepository.findById(anyLong())).willReturn(Optional.ofNullable(null));
+        given(postRepository.findById(anyLong())).willReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> postService.update(1L, createPostUpdateRequest("title", "content", 1234L, List.of(), List.of())))
