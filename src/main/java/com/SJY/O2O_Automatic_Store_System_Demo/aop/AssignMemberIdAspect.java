@@ -1,7 +1,6 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.aop;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard.AuthHelper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
@@ -15,12 +14,8 @@ import java.util.Optional;
 
 @Aspect
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class AssignMemberIdAspect {
-
-    private final AuthHelper authHelper;
-
     @Before("@annotation(com.SJY.O2O_Automatic_Store_System_Demo.aop.AssignMemberId)")
     public void assignMemberId(JoinPoint joinPoint) {
         // 대상 객체 정보 로깅
@@ -43,7 +38,7 @@ public class AssignMemberIdAspect {
         // memberId 할당 로직
         Arrays.stream(args)
                 .forEach(arg -> getMethod(arg.getClass(), "setMemberId")
-                        .ifPresent(setMemberId -> invokeMethod(arg, setMemberId, authHelper.extractMemberId())));
+                        .ifPresent(setMemberId -> invokeMethod(arg, setMemberId, AuthHelper.extractMemberId())));
     }
 
     private Optional<Method> getMethod(Class<?> clazz, String methodName) {

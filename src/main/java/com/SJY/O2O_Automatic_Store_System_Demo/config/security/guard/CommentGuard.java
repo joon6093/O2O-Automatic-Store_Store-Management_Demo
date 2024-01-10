@@ -2,34 +2,28 @@ package com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.comment.Comment;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.RoleType;
+import com.SJY.O2O_Automatic_Store_System_Demo.exception.CommentNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.comment.CommentRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
-public class CommentGuard {
-    private final AuthHelper authHelper;
+public class CommentGuard extends Guard {
     private final CommentRepository commentRepository;
+    private List<RoleType> roleTypes = List.of(RoleType.ROLE_ADMIN);
 
-    public boolean check(Long id) {
-        return authHelper.isAuthenticated() && hasAuthority(id);
+    @Override
+    protected List<RoleType> getRoleTypes() {
+        return roleTypes;
     }
 
-    private boolean hasAuthority(Long id) {
-        return hasAdminRole() || isResourceOwner(id);
-    }
-
-    private boolean isResourceOwner(Long id) {
-        Comment comment = commentRepository.findById(id).orElseThrow(() -> new AccessDeniedException(""));
-        Long memberId = authHelper.extractMemberId();
+    @Override
+    protected boolean isResourceOwner(Long id) {
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new CommentNotFoundException());
+        Long memberId = AuthHelper.extractMemberId();
         return comment.getMember().getId().equals(memberId);
-    }
-
-    private boolean hasAdminRole() {
-        return authHelper.extractMemberRoles().contains(RoleType.ROLE_ADMIN);
     }
 }

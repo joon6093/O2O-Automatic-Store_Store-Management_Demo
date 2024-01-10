@@ -5,31 +5,25 @@ import com.SJY.O2O_Automatic_Store_System_Demo.entity.post.Post;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.PostNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
-public class PostGuard {
-    private final AuthHelper authHelper;
+public class PostGuard extends Guard {
     private final PostRepository postRepository;
+    private List<RoleType> roleTypes = List.of(RoleType.ROLE_ADMIN);
 
-    public boolean check(Long id) {
-        return authHelper.isAuthenticated() && hasAuthority(id);
+    @Override
+    protected List<RoleType> getRoleTypes() {
+        return roleTypes;
     }
 
-    private boolean hasAuthority(Long id) {
-        return hasAdminRole() || isResourceOwner(id);
-    }
-
-    private boolean isResourceOwner(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
-        Long memberId = authHelper.extractMemberId();
+    @Override
+    protected boolean isResourceOwner(Long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException());
+        Long memberId = AuthHelper.extractMemberId();
         return post.getMember().getId().equals(memberId);
-    }
-
-    private boolean hasAdminRole() {
-        return authHelper.extractMemberRoles().contains(RoleType.ROLE_ADMIN);
     }
 }
