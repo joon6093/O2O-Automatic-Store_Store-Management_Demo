@@ -1,13 +1,16 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.entity.message;
 
+import com.SJY.O2O_Automatic_Store_System_Demo.dto.member.MemberDto;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.common.EntityDate;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
+import com.SJY.O2O_Automatic_Store_System_Demo.event.message.MessageCreatedEvent;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.context.ApplicationEventPublisher;
 
 @Entity
 @Getter
@@ -55,5 +58,15 @@ public class Message extends EntityDate {
 
     public boolean isDeletable() {
         return isDeletedBySender() && isDeletedByReceiver();
+    }
+
+    public void publishCreatedEvent(ApplicationEventPublisher publisher) {
+        publisher.publishEvent(
+                new MessageCreatedEvent(
+                        MemberDto.toDto(getSender()),
+                        MemberDto.toDto(getReceiver()),
+                        getContent()
+                )
+        );
     }
 }

@@ -5,6 +5,7 @@ import com.SJY.O2O_Automatic_Store_System_Demo.dto.message.MessageDto;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.message.MessageListDto;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.message.MessageReadCondition;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.message.Message;
+import com.SJY.O2O_Automatic_Store_System_Demo.event.message.MessageCreatedEvent;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.MemberNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.MessageNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepository;
@@ -14,8 +15,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +41,8 @@ class MessageServiceTest {
     MessageRepository messageRepository;
     @Mock
     MemberRepository memberRepository;
+    @Mock
+    ApplicationEventPublisher publisher;
 
     @Test
     void readAllBySenderTest() {
@@ -107,6 +112,7 @@ class MessageServiceTest {
 
         // then
         verify(messageRepository).save(any());
+        verify(publisher).publishEvent(any(MessageCreatedEvent.class));
     }
 
     @Test

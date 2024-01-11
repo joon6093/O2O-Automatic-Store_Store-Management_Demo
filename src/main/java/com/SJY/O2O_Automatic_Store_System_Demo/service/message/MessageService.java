@@ -6,6 +6,7 @@ import com.SJY.O2O_Automatic_Store_System_Demo.exception.MessageNotFoundExceptio
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepository;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.message.MessageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import java.util.function.Consumer;
 public class MessageService {
     private final MessageRepository messageRepository;
     private final MemberRepository memberRepository;
+    private final ApplicationEventPublisher publisher;
 
     public MessageListDto readAllBySender(MessageReadCondition cond) {
         return MessageListDto.toDto(
@@ -41,6 +43,7 @@ public class MessageService {
     public MessageCreateResponse create(MessageCreateRequest req) {
         Message message = MessageCreateRequest.toEntity(req, memberRepository);
         messageRepository.save(MessageCreateRequest.toEntity(req, memberRepository));
+        message.publishCreatedEvent(publisher);
         return new MessageCreateResponse(message.getId());
     }
 
