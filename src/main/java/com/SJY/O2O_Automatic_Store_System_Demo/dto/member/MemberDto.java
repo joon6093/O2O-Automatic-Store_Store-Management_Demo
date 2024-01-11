@@ -29,4 +29,7 @@ public class MemberDto {
                 member.getCreatedAt()
         );
     }
+    public static MemberDto empty() {
+        return new MemberDto(null, "", "", "",null);
+    }
 }

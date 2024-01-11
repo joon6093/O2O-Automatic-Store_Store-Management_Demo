@@ -12,6 +12,7 @@ import com.SJY.O2O_Automatic_Store_System_Demo.repository.comment.CommentReposit
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepository;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
+    private final ApplicationEventPublisher publisher;
 
     public List<CommentDto> readAll(CommentReadCondition cond) {
         return CommentDto.toDtoList(
@@ -45,6 +47,7 @@ public class CommentService {
 
         }
         commentRepository.save(comment);
+        comment.publishCreatedEvent(publisher);
         return new CommentCreateResponse(comment.getId());
     }
 

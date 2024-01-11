@@ -1,6 +1,7 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.service.comment;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.comment.CommentDto;
+import com.SJY.O2O_Automatic_Store_System_Demo.event.comment.CommentCreatedEvent;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.CommentNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.MemberNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.PostNotFoundException;
@@ -12,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +29,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class CommentServiceTest {
@@ -38,6 +42,8 @@ class CommentServiceTest {
     MemberRepository memberRepository;
     @Mock
     PostRepository postRepository;
+    @Mock
+    ApplicationEventPublisher publisher;
 
     @Test
     void readAllTest() {
@@ -86,6 +92,8 @@ class CommentServiceTest {
 
         // then
         verify(commentRepository).save(any());
+        verify(publisher).publishEvent(any(CommentCreatedEvent.class));
+
     }
 
     @Test

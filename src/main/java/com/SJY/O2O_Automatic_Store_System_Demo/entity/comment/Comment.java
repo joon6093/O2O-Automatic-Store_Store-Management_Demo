@@ -1,8 +1,10 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.entity.comment;
 
+import com.SJY.O2O_Automatic_Store_System_Demo.dto.member.MemberDto;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.common.EntityDate;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.post.Post;
+import com.SJY.O2O_Automatic_Store_System_Demo.event.comment.CommentCreatedEvent;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,8 +12,11 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.context.ApplicationEventPublisher;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -90,5 +95,16 @@ public class Comment extends EntityDate {
 
     private boolean isDeletedParent() {
         return getParent() != null && getParent().isDeleted();
+    }
+
+    public void publishCreatedEvent(ApplicationEventPublisher publisher) {
+        publisher.publishEvent(
+                new CommentCreatedEvent(
+                        MemberDto.toDto(getMember()),
+                        MemberDto.toDto(getPost().getMember()),
+                        Optional.ofNullable(getParent()).map(p -> p.getMember()).map(m -> MemberDto.toDto(m)).orElseGet(() -> MemberDto.empty()),
+                        getContent()
+                )
+        );
     }
 }

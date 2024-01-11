@@ -2,6 +2,7 @@ package com.SJY.O2O_Automatic_Store_System_Demo.factory.entity;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Role;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
@@ -18,5 +19,11 @@ public class MemberFactory {
 
     public static Member createMemberWithRoles(List<Role> roles) {
         return new Member("email@email.com", "123456a!", "username", "nickname", roles);
+    }
+
+    public static Member createMemberWithId(Long id) {
+        Member member = new Member("email@email.com", "123456a!", "username", "nickname", emptyList());
+        ReflectionTestUtils.setField(member, "id", id);
+        return member;
     }
 }
