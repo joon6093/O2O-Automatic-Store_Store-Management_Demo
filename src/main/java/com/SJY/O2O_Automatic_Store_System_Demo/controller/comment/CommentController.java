@@ -21,7 +21,7 @@ public class CommentController {
 
     @Operation(summary = "댓글 목록 조회", description = "댓글 목록을 조회한다.")
     @GetMapping
-    public ResponseEntity<Response> readAll(@Parameter(description = "댓글 조회 조건") @Valid CommentReadCondition cond) {
+    public ResponseEntity<Response> readAll(@Parameter(description = "댓글 조회 조건") @Valid @ModelAttribute CommentReadCondition cond) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(Response.success(commentService.readAll(cond)));

@@ -51,6 +51,14 @@ public class SwaggerConfig {
     }
 
     @Bean
+    public GroupedOpenApi MessageApi() {
+        return GroupedOpenApi.builder()
+                .group("message")
+                .pathsToMatch("/api/messages/**")
+                .build();
+    }
+
+    @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()

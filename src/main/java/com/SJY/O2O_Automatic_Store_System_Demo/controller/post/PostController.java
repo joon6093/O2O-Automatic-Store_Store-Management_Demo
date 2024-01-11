@@ -26,7 +26,7 @@ public class PostController {
     @Operation(summary = "게시글 생성", description = "게시글을 생성한다.")
     @AssignMemberId
     @PostMapping("/api/posts")
-    public ResponseEntity<Response> create(@Valid @ModelAttribute PostCreateRequest req) {
+    public ResponseEntity<Response> create(@Parameter(description = "게시글 생성 요청") @Valid @ModelAttribute PostCreateRequest req) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(Response.success(postService.create(req)));
@@ -52,8 +52,8 @@ public class PostController {
     @Operation(summary = "게시글 수정", description = "게시글을 수정한다.")
     @PutMapping("/api/posts/{id}")
     public ResponseEntity<Response> update(
-            @Parameter(description = "게시글 id", required = true) @PathVariable(name = "id") Long id,
-            @Valid @ModelAttribute PostUpdateRequest req) {
+            @Parameter(description = "게시글 id") @PathVariable(name = "id") Long id,
+            @Parameter(description = "게시글 수정 요청") @Valid @ModelAttribute PostUpdateRequest req) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(Response.success(postService.update(id, req)));
@@ -61,7 +61,7 @@ public class PostController {
 
     @Operation(summary = "게시글 목록 조회", description = "게시글 목록을 조회한다.")
     @GetMapping("/api/posts")
-    public ResponseEntity<Response> readAll(@Valid PostReadCondition cond) {
+    public ResponseEntity<Response> readAll(@Parameter(description = "게시글 조회 조건") @Valid @ModelAttribute PostReadCondition cond) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(Response.success(postService.readAll(cond)));

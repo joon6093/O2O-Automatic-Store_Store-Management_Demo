@@ -1,8 +1,6 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.config.security;
 
-import com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard.CommentGuard;
-import com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard.MemberGuard;
-import com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard.PostGuard;
+import com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard.*;
 import com.SJY.O2O_Automatic_Store_System_Demo.config.tocken.TokenHelper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -29,17 +27,26 @@ public class SecurityConfig {
     private final MemberGuard memberGuard;
     private final PostGuard postGuard;
     private final CommentGuard commentGuard;
+    private final MessageGuard messageGuard;
+    private final MessageSenderGuard messageSenderGuard;
+    private final MessageReceiverGuard messageReceiverGuard;
 
     public SecurityConfig(@Qualifier("accessTokenHelper") TokenHelper accessTokenHelper,
                           CustomUserDetailsService userDetailsService,
                           MemberGuard memberGuard,
                           PostGuard postGuard,
-                          CommentGuard commentGuard) {
+                          CommentGuard commentGuard,
+                          MessageGuard messageGuard,
+                          MessageSenderGuard messageSenderGuard,
+                          MessageReceiverGuard messageReceiverGuard) {
         this.accessTokenHelper = accessTokenHelper;
         this.userDetailsService = userDetailsService;
         this.memberGuard = memberGuard;
         this.postGuard = postGuard;
         this.commentGuard = commentGuard;
+        this.messageGuard = messageGuard;
+        this.messageSenderGuard = messageSenderGuard;
+        this.messageReceiverGuard = messageReceiverGuard;
     }
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -63,7 +70,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize
                         .requestMatchers(HttpMethod.POST, "/api/sign-in", "/api/sign-up","/api/refresh-token").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/**","/image/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/members/{id}/**")
                                 .access((authentication, context) -> new AuthorizationDecision(memberGuard.check(Long.parseLong(context.getVariables().get("id")))))
                         .requestMatchers(HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
@@ -76,7 +82,16 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/comments").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/comments/{id}/**")
                             .access((authentication, context) -> new AuthorizationDecision(commentGuard.check(Long.parseLong(context.getVariables().get("id")))))
-                                .anyRequest().hasAnyRole("ADMIN"))
+                        .requestMatchers(HttpMethod.GET, "/api/messages/sender", "/api/messages/receiver").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/messages/{id}")
+                            .access((authentication, context) -> new AuthorizationDecision(messageGuard.check(Long.parseLong(context.getVariables().get("id")))))
+                        .requestMatchers(HttpMethod.POST, "/api/messages").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/messages/sender/{id}")
+                            .access((authentication, context) -> new AuthorizationDecision(messageSenderGuard.check(Long.parseLong(context.getVariables().get("id")))))
+                        .requestMatchers(HttpMethod.DELETE, "/api/messages/receiver/{id}")
+                            .access((authentication, context) -> new AuthorizationDecision(messageReceiverGuard.check(Long.parseLong(context.getVariables().get("id")))))
+                        .requestMatchers(HttpMethod.GET, "/api/**","/image/**").permitAll()
+                        .anyRequest().hasAnyRole("ADMIN"))
                 .exceptionHandling((exceptionConfig) ->
                         exceptionConfig.authenticationEntryPoint(new CustomAuthenticationEntryPoint()).accessDeniedHandler(new CustomAccessDeniedHandler())
                 )

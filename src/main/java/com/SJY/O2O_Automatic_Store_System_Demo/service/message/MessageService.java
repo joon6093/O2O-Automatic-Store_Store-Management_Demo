@@ -1,9 +1,6 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.service.message;
 
-import com.SJY.O2O_Automatic_Store_System_Demo.dto.message.MessageCreateRequest;
-import com.SJY.O2O_Automatic_Store_System_Demo.dto.message.MessageDto;
-import com.SJY.O2O_Automatic_Store_System_Demo.dto.message.MessageListDto;
-import com.SJY.O2O_Automatic_Store_System_Demo.dto.message.MessageReadCondition;
+import com.SJY.O2O_Automatic_Store_System_Demo.dto.message.*;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.message.Message;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.MessageNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepository;
@@ -41,8 +38,10 @@ public class MessageService {
     }
 
     @Transactional
-    public void create(MessageCreateRequest req) {
+    public MessageCreateResponse create(MessageCreateRequest req) {
+        Message message = MessageCreateRequest.toEntity(req, memberRepository);
         messageRepository.save(MessageCreateRequest.toEntity(req, memberRepository));
+        return new MessageCreateResponse(message.getId());
     }
 
     @Transactional
