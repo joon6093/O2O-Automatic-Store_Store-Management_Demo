@@ -1,19 +1,24 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.dto.message;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import org.springframework.data.domain.Slice;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Data
-@AllArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MessageListDto {
     private int numberOfElements;
     private boolean hasNext;
     private List<MessageSimpleDto> messageList;
 
-    public static MessageListDto toDto(Slice<MessageSimpleDto> slice) {
-        return new MessageListDto(slice.getNumberOfElements(), slice.hasNext(), slice.getContent());
+    @Builder
+    public MessageListDto(int numberOfElements, boolean hasNext, List<MessageSimpleDto> messageList) {
+        this.numberOfElements = numberOfElements;
+        this.hasNext = hasNext;
+        this.messageList = messageList;
     }
+
 }

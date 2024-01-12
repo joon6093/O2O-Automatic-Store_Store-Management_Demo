@@ -3,6 +3,7 @@ package com.SJY.O2O_Automatic_Store_System_Demo.entity.member;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.common.EntityDate;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -39,6 +40,7 @@ public class Member extends EntityDate {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL , orphanRemoval = true)
     private Set<MemberRole> roles;
 
+    @Builder
     public Member(String email, String password, String username, String nickname, List<Role> roles) {
         this.email = email;
         this.password = password;

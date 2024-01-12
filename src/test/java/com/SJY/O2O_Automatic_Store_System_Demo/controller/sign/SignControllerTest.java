@@ -80,9 +80,9 @@ class SignControllerTest {
                         post("/api/sign-up")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.result").doesNotExist());
+                .andExpect(status().isCreated());
 
+        verify(signService).signUp(req);
     }
 
     @Test

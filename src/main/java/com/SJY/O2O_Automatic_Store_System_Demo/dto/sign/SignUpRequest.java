@@ -1,7 +1,5 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.dto.sign;
 
-import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
-import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -10,9 +8,6 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -42,8 +37,4 @@ public class SignUpRequest {
     @Size(min=2, message = "{signUpRequest.nickname.size}")
     @Pattern(regexp = "^[A-Za-z가-힣]+$", message = "{signUpRequest.nickname.pattern}")
     private String nickname;
-
-    public static Member toEntity(SignUpRequest req, Role role, PasswordEncoder encoder) {
-        return new Member(req.email, encoder.encode(req.password), req.username, req.nickname, List.of(role));
-    }
 }

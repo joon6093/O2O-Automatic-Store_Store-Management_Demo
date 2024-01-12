@@ -19,8 +19,7 @@ public class SignController {
     @Operation(summary = "회원가입", description = "회원가입을 한다.")
     @PostMapping("/api/sign-up")
     public ResponseEntity<Response> signUp(@Valid @RequestBody SignUpRequest req) {
-        signService.signUp(req);
-        return ResponseEntity.status(HttpStatus.CREATED).body(Response.success());
+        return ResponseEntity.status(HttpStatus.CREATED).body(Response.success(signService.signUp(req)));
     }
 
     @Operation(summary = "로그인", description = "로그인을 한다.")

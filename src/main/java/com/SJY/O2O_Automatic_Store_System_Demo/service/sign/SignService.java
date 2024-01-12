@@ -1,11 +1,9 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.service.sign;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.config.tocken.TokenHelper;
-import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.RefreshTokenResponse;
-import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignInRequest;
-import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignInResponse;
-import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignUpRequest;
+import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.*;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
+import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Role;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.RoleType;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.*;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepository;
@@ -15,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,13 +34,18 @@ public class SignService {
     }
 
     @Transactional
-    public void signUp(SignUpRequest req) {
+    public SignUpResponse signUp(SignUpRequest req) {
         validateSignUpInfo(req);
-        memberRepository.save(SignUpRequest.toEntity(
-                req,
-                roleRepository.findByRoleType(RoleType.ROLE_NORMAL).orElseThrow(RoleNotFoundException::new),
-                passwordEncoder
-        ));
+        Role role = roleRepository.findByRoleType(RoleType.ROLE_NORMAL).orElseThrow(RoleNotFoundException::new);
+        Member member = Member.builder()
+                        .email(req.getEmail())
+                        .password(passwordEncoder.encode(req.getPassword()))
+                        .username(req.getUsername())
+                        .nickname(req.getNickname())
+                        .roles(List.of(role))
+                        .build();
+        memberRepository.save(member);
+        return new SignUpResponse(member.getId());
     }
 
     private void validateSignUpInfo(SignUpRequest req) {

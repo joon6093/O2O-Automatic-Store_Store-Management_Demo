@@ -30,10 +30,9 @@ public class CategoryController {
     @Operation(summary = "카테고리 생성", description = "카테고리를 생성한다.")
     @PostMapping("/api/categories")
     public ResponseEntity<Response> create(@Parameter(description = "카테고리 생성 요청") @Valid @RequestBody CategoryCreateRequest req) {
-        categoryService.create(req);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(Response.success());
+                .body(Response.success(categoryService.create(req)));
     }
 
     @Operation(summary = "카테고리 삭제", description = "카테고리를 삭제한다.")

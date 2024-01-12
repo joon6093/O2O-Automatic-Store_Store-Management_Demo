@@ -6,6 +6,7 @@ import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
 import com.SJY.O2O_Automatic_Store_System_Demo.event.message.MessageCreatedEvent;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -40,6 +41,7 @@ public class Message extends EntityDate {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member receiver;
 
+    @Builder
     public Message(String content, Member sender, Member receiver) {
         this.content = content;
         this.sender = sender;

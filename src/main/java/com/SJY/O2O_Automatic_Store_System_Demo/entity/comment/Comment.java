@@ -7,6 +7,7 @@ import com.SJY.O2O_Automatic_Store_System_Demo.entity.post.Post;
 import com.SJY.O2O_Automatic_Store_System_Demo.event.comment.CommentCreatedEvent;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +53,7 @@ public class Comment extends EntityDate {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE)
     private Set<Comment> children = new HashSet<>();
 
+    @Builder
     public Comment(String content, Member member, Post post) {
         this.content = content;
         this.member = member;

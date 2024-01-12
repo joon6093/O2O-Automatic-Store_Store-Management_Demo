@@ -1,18 +1,17 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.dto.post;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.member.MemberDto;
-import com.SJY.O2O_Automatic_Store_System_Demo.entity.post.Post;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
-@Data
-@AllArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostDto {
     private Long id;
     private String title;
@@ -26,16 +25,15 @@ public class PostDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime modifiedAt;
 
-    public static PostDto toDto(Post post) {
-        return new PostDto(
-                post.getId(),
-                post.getTitle(),
-                post.getContent(),
-                post.getPrice(),
-                MemberDto.toDto(post.getMember()),
-                post.getImages().stream().map(i -> ImageDto.toDto(i)).collect(toList()),
-                post.getCreatedAt(),
-                post.getModifiedAt()
-        );
+    @Builder
+    public PostDto(Long id, String title, String content, Long price, MemberDto member, List<ImageDto> images, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.price = price;
+        this.member = member;
+        this.images = images;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
     }
 }

@@ -1,20 +1,25 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.dto.post;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import org.springframework.data.domain.Page;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Data
-@AllArgsConstructor
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostListDto {
     private Long totalElements;
     private Integer totalPages;
     private boolean hasNext;
     private List<PostSimpleDto> postList;
 
-    public static PostListDto toDto(Page<PostSimpleDto> page) {
-        return new PostListDto(page.getTotalElements(), page.getTotalPages(), page.hasNext(), page.getContent());
+    @Builder
+    public PostListDto(Long totalElements, Integer totalPages, boolean hasNext, List<PostSimpleDto> postList) {
+        this.totalElements = totalElements;
+        this.totalPages = totalPages;
+        this.hasNext = hasNext;
+        this.postList = postList;
     }
 }

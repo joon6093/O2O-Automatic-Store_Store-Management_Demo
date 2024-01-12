@@ -2,6 +2,7 @@ package com.SJY.O2O_Automatic_Store_System_Demo.entity.category;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,6 +28,7 @@ public class Category {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE)
     private final Set<Category> children = new HashSet<>();
 
+    @Builder
     public Category(String name) {
         this.name = name;
     }

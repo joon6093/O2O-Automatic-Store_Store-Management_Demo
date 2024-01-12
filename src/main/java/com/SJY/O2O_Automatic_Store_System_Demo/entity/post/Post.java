@@ -5,10 +5,7 @@ import com.SJY.O2O_Automatic_Store_System_Demo.entity.category.Category;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.common.EntityDate;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,6 +47,7 @@ public class Post extends EntityDate {
     @OneToMany(mappedBy = "post", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
+    @Builder
     public Post(String title, String content, Long price, Member member, Category category) {
         this.title = title;
         this.content = content;

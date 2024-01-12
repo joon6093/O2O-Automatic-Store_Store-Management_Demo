@@ -15,7 +15,14 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public MemberDto read(Long id) {
-        return MemberDto.toDto(memberRepository.findById(id).orElseThrow(MemberNotFoundException::new));
+        Member member = memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
+        return MemberDto.builder()
+                .id(member.getId())
+                .email(member.getEmail())
+                .username(member.getUsername())
+                .nickname(member.getNickname())
+                .createdAt(member.getCreatedAt())
+                .build();
     }
 
     @Transactional
