@@ -17,16 +17,16 @@ import java.util.List;
 @AllArgsConstructor
 public class PostUpdateRequest {
     @Schema(description = "게시글 제목", example = "my title", required = true)
-    @NotBlank(message = "게시글 제목을 입력해주세요.")
+    @NotBlank(message = "{postUpdateRequest.title.notBlank}")
     private String title;
 
     @Schema(description = "게시글 본문", example = "my content", required = true)
-    @NotBlank(message = "게시글 본문을 입력해주세요.")
+    @NotBlank(message = "{postUpdateRequest.content.notBlank}")
     private String content;
 
     @Schema(description = "가격", example = "50000", required = true)
-    @NotNull(message = "가격을 입력해주세요.")
-    @PositiveOrZero(message = "0원 이상을 입력해주세요")
+    @NotNull(message = "{postUpdateRequest.price.notNull}")
+    @PositiveOrZero(message = "{postUpdateRequest.price.positiveOrZero}")
     private Long price;
 
     @Schema(description = "추가된 이미지")

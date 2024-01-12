@@ -16,18 +16,18 @@ import lombok.NoArgsConstructor;
 public class CommentCreateRequest {
 
     @Schema(description = "댓글 내용", example = "my comment", required = true)
-    @NotBlank(message = "댓글을 입력해주세요.")
+    @NotBlank(message = "{commentCreateRequest.content.notBlank}")
     private String content;
 
     @Schema(description = "게시글 아이디", example = "7", required = true)
-    @NotNull(message = "게시글 아이디를 입력해주세요.")
-    @Positive(message = "올바른 게시글 아이디를 입력해주세요.")
+    @NotNull(message = "{commentCreateRequest.postId.notNull}")
+    @Positive(message = "{commentCreateRequest.postId.positive}")
     private Long postId;
 
     @Schema(hidden = true)
     @Null
     private Long memberId;
 
-    @Schema(description = "부모 댓글 아이디", example = "7", required = false)
+    @Schema(description = "부모 댓글 아이디", example = "7")
     private Long parentId;
 }

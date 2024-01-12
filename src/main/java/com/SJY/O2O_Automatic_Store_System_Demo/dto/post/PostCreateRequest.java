@@ -26,16 +26,16 @@ import static java.util.stream.Collectors.toList;
 public class PostCreateRequest {
 
     @Schema(description = "게시글 제목", example = "my title", required = true)
-    @NotBlank(message = "게시글 제목을 입력해주세요.")
+    @NotBlank(message = "{postCreateRequest.title.notBlank}")
     private String title;
 
     @Schema(description = "게시글 본문", example = "my content", required = true)
-    @NotBlank(message = "게시글 본문을 입력해주세요.")
+    @NotBlank(message = "{postCreateRequest.content.notBlank}")
     private String content;
 
     @Schema(description = "가격", example = "50000", required = true)
-    @NotNull(message = "가격을 입력해주세요.")
-    @PositiveOrZero(message = "0원 이상을 입력해주세요")
+    @NotNull(message = "{postCreateRequest.price.notNull")
+    @PositiveOrZero(message = "{postCreateRequest.price.positiveOrZero}")
     private Long price;
 
     @Schema(hidden = true)
@@ -43,12 +43,13 @@ public class PostCreateRequest {
     private Long memberId;
 
     @Schema(description = "카테고리 아이디", example = "3", required = true)
-    @NotNull(message = "카테고리 아이디를 입력해주세요.")
-    @PositiveOrZero(message = "올바른 카테고리 아이디를 입력해주세요.")
+    @NotNull(message = "{postCreateRequest.categoryId.notNull}")
+    @PositiveOrZero(message = "{postCreateRequest.categoryId.positiveOrZero}")
     private Long categoryId;
 
     @Schema(description = "이미지", type = "array", format = "binary")
     private List<MultipartFile> images = new ArrayList<>();
+
     public static Post toEntity(PostCreateRequest req, MemberRepository memberRepository, CategoryRepository categoryRepository) {
         Post post = new Post(
                 req.title,

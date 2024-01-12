@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 public class CategoryCreateRequest {
 
     @Schema(description = "카테고리 명", example = "my category", required = true)
-    @NotBlank(message = "카테고리 명을 입력해주세요.")
-    @Size(min = 2, max = 30, message = "카테고리 명은 최소 2글자에서 30글자 입니다.")
+    @NotBlank(message = "{categoryCreateRequest.name.notBlank}")
+    @Size(min = 2, max = 30, message = "{categoryCreateRequest.name.size}")
     private String name;
 
     @Schema(description = "부모 카테고리 아이디", example = "7")

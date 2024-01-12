@@ -56,4 +56,18 @@ class MessageCreatedListenerTest {
         // then
         calledCount = 1;
     }
+
+    @Test
+    void handleMessageCreatedEventWhenPublisherIsReceiverTest() {
+        // given
+        MemberDto publisher = MemberDto.toDto(createMemberWithId(1L));
+        MemberDto receiver = MemberDto.toDto(createMemberWithId(1L));
+        String content = "Hello!";
+
+        // when
+        this.publisher.publishEvent(new MessageCreatedEvent(publisher, receiver, content));
+
+        // then
+        calledCount = 0;
+    }
 }

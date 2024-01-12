@@ -42,7 +42,7 @@ public class MessageService {
     @Transactional
     public MessageCreateResponse create(MessageCreateRequest req) {
         Message message = MessageCreateRequest.toEntity(req, memberRepository);
-        messageRepository.save(MessageCreateRequest.toEntity(req, memberRepository));
+        messageRepository.save(message);
         message.publishCreatedEvent(publisher);
         return new MessageCreateResponse(message.getId());
     }

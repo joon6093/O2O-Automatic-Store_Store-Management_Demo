@@ -14,12 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostReadCondition {
-    @NotNull(message = "페이지 번호를 입력해주세요.")
-    @PositiveOrZero(message = "올바른 페이지 번호를 입력해주세요. (0 이상)")
+    @NotNull(message = "{postReadCondition.page.notNull}")
+    @PositiveOrZero(message = "{postReadCondition.page.positiveOrZero}")
     private Integer page;
 
-    @NotNull(message = "페이지 크기를 입력해주세요.")
-    @Positive(message = "올바른 페이지 크기를 입력해주세요. (1 이상)")
+    @NotNull(message = "{postReadCondition.size.notNull}")
+    @Positive(message = "{postReadCondition.size.positive}")
     private Integer size;
 
     private List<Long> categoryId = new ArrayList<>();

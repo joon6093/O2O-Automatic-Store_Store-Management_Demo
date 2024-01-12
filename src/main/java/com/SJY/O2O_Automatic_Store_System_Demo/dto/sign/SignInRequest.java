@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 public class SignInRequest {
 
     @Schema(description = "사용자의 이메일", example = "member@email.com", required = true)
-    @Email(message = "이메일 형식을 맞춰주세요.")
-    @NotBlank(message = "이메일을 입력해주세요.")
+    @Email(message = "{signInRequest.email.email}")
+    @NotBlank(message = "{signInRequest.email.notBlank}")
     private String email;
 
     @Schema(description = "사용자의 비밀번호", example = "123456a!", required = true)
-    @NotBlank(message = "비밀번호를 입력해주세요.")
+    @NotBlank(message = "{signInRequest.password.notBlank}")
     private String password;
 }

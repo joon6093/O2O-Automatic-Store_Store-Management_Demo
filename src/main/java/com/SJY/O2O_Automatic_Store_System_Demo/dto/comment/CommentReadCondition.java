@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentReadCondition {
-    @NotNull(message = "게시글 번호를 입력해주세요.")
-    @PositiveOrZero(message = "올바른 게시글 번호를 입력해주세요. (0 이상)")
+    @NotNull(message = "{commentReadCondition.postId.notNull}")
+    @PositiveOrZero(message = "{commentReadCondition.postId.positiveOrZero}")
     private Long postId;
 }
