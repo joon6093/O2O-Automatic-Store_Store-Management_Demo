@@ -1,34 +1,35 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.config.security;
 
-import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
-import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepository;
-import lombok.RequiredArgsConstructor;
+import com.SJY.O2O_Automatic_Store_System_Demo.config.tocken.TokenHelper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-
-    private final MemberRepository memberRepository;
+    private final TokenHelper accessTokenHelper;
+    public CustomUserDetailsService(@Qualifier("accessTokenHelper")TokenHelper accessTokenHelper) {
+        this.accessTokenHelper = accessTokenHelper;
+    }
 
     @Override
-    public CustomUserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        Member member = memberRepository.findWithRolesById(Long.valueOf(userId)).orElseGet(() -> new Member(null, null, null, null, List.of()));
+    public CustomUserDetails loadUserByUsername(String token) throws UsernameNotFoundException {
+        CustomUserDetails customUserDetails = accessTokenHelper.parse(token)
+                .map(privateClaims -> convert(privateClaims))
+                .orElse(null);
+        return customUserDetails;
+    }
+
+    private CustomUserDetails convert(TokenHelper.PrivateClaims privateClaims) {
         return new CustomUserDetails(
-                String.valueOf(member.getId()),
-                member.getRoles().stream()
-                        .map(memberRole -> memberRole.getRole())
-                        .map(role -> role.getRoleType())
-                        .map(roleType -> roleType.toString())
-                        .map(SimpleGrantedAuthority::new).collect(Collectors.toSet())
+                privateClaims.getMemberId(),
+                privateClaims.getRoleTypes().stream().map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toSet())
         );
     }
 }

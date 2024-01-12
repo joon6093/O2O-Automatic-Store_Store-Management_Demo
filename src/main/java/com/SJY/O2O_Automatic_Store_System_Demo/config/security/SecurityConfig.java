@@ -1,8 +1,6 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.config.security;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard.*;
-import com.SJY.O2O_Automatic_Store_System_Demo.config.tocken.TokenHelper;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final TokenHelper accessTokenHelper;
     private final CustomUserDetailsService userDetailsService;
     private final MemberGuard memberGuard;
     private final PostGuard postGuard;
@@ -31,15 +28,13 @@ public class SecurityConfig {
     private final MessageSenderGuard messageSenderGuard;
     private final MessageReceiverGuard messageReceiverGuard;
 
-    public SecurityConfig(@Qualifier("accessTokenHelper") TokenHelper accessTokenHelper,
-                          CustomUserDetailsService userDetailsService,
+    public SecurityConfig(CustomUserDetailsService userDetailsService,
                           MemberGuard memberGuard,
                           PostGuard postGuard,
                           CommentGuard commentGuard,
                           MessageGuard messageGuard,
                           MessageSenderGuard messageSenderGuard,
                           MessageReceiverGuard messageReceiverGuard) {
-        this.accessTokenHelper = accessTokenHelper;
         this.userDetailsService = userDetailsService;
         this.memberGuard = memberGuard;
         this.postGuard = postGuard;
@@ -95,8 +90,7 @@ public class SecurityConfig {
                 .exceptionHandling((exceptionConfig) ->
                         exceptionConfig.authenticationEntryPoint(new CustomAuthenticationEntryPoint()).accessDeniedHandler(new CustomAccessDeniedHandler())
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(accessTokenHelper, userDetailsService), UsernamePasswordAuthenticationFilter.class);
-
+                .addFilterBefore(new JwtAuthenticationFilter(userDetailsService), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

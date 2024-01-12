@@ -145,6 +145,13 @@ public class ExceptionAdvice {
                 .body(getFailureResponse("messageNotFoundException.code", "messageNotFoundException.msg"));
     }
 
+    @ExceptionHandler(RefreshTokenFailureException.class)
+    public ResponseEntity<Response> refreshTokenFailureException() {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(getFailureResponse("refreshTokenFailureException.code", "refreshTokenFailureException.msg"));
+    }
+
     private Response getFailureResponse(String codeKey, String messageKey) {
         log.info("code = {}, msg = {}", getCode(codeKey), getMessage(messageKey, null));
         return Response.failure(getCode(codeKey), getMessage(messageKey, null));

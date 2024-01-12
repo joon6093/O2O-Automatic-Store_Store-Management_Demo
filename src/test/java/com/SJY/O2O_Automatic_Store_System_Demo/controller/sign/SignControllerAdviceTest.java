@@ -128,14 +128,14 @@ class SignControllerAdviceTest {
     @Test
     void refreshTokenAuthenticationEntryPointException() throws Exception {
         // given
-        given(signService.refreshToken(anyString())).willThrow(AuthenticationEntryPointException.class);
+        given(signService.refreshToken(anyString())).willThrow(RefreshTokenFailureException.class);
 
         // when, then
         mockMvc.perform(
                         post("/api/refresh-token")
                                 .header("Authorization", "refreshToken"))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.code").value(-1001));
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value(-1017));
     }
 
     @Test
