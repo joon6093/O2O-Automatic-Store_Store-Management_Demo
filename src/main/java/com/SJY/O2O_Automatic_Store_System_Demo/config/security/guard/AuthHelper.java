@@ -15,8 +15,7 @@ import java.util.stream.Collectors;
 public class AuthHelper {
 
     public static boolean isAuthenticated() {
-        return getAuthentication() instanceof CustomAuthenticationToken &&
-                getAuthentication().isAuthenticated();
+        return (getAuthentication() instanceof CustomAuthenticationToken) && (getAuthentication().isAuthenticated());
     }
 
     public static Long extractMemberId() {

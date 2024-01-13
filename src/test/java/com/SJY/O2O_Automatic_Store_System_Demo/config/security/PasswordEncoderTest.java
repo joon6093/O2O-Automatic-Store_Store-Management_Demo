@@ -1,4 +1,4 @@
-package learning;
+package com.SJY.O2O_Automatic_Store_System_Demo.config.security;
 
 
 import org.junit.jupiter.api.Test;

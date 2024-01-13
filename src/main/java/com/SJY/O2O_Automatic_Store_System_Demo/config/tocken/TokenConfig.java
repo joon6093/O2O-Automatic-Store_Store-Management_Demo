@@ -1,6 +1,5 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.config.tocken;
 
-import com.SJY.O2O_Automatic_Store_System_Demo.handler.JwtHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;

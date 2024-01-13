@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Getter // 3
+@Getter
 public class Response {
     private boolean success;
     private int code;

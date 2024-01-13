@@ -1,6 +1,6 @@
-package learning;
+package com.SJY.O2O_Automatic_Store_System_Demo.config.tocken;
 
-import com.SJY.O2O_Automatic_Store_System_Demo.handler.JwtHandler;
+import com.SJY.O2O_Automatic_Store_System_Demo.config.tocken.JwtHandler;
 import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.Test;
 

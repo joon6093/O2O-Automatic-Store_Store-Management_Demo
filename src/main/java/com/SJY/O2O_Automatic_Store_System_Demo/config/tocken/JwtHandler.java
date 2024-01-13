@@ -1,4 +1,4 @@
-package com.SJY.O2O_Automatic_Store_System_Demo.handler;
+package com.SJY.O2O_Automatic_Store_System_Demo.config.tocken;
 
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +26,9 @@ public class JwtHandler {
     public Optional<Claims> parse(String key, String token) {
         try {
             return Optional.of(Jwts.parser().setSigningKey(key.getBytes()).parseClaimsJws(unType(token)).getBody());
-        } catch (ExpiredJwtException e) {
+        } catch (ExpiredJwtException e) {  // ExpiredJwtException 정보만 클라이언트에게 전달. 나머지 예외는 보안상에 이유르 전달하지 않음.
             log.warn("Expired JWT token - {}", e.getMessage());
-            return Optional.empty();
+            throw e;
         } catch (UnsupportedJwtException e) {
             log.warn("Unsupported JWT token - {}", e.getMessage());
             return Optional.empty();

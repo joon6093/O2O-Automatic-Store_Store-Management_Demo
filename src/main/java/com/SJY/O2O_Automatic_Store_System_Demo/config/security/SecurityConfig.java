@@ -3,6 +3,7 @@ package com.SJY.O2O_Automatic_Store_System_Demo.config.security;
 import com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard.*;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
     private final CustomUserDetailsService userDetailsService;
+    private final MessageSource messageSource;
     private final MemberGuard memberGuard;
     private final PostGuard postGuard;
     private final CommentGuard commentGuard;
@@ -29,6 +31,7 @@ public class SecurityConfig {
     private final MessageReceiverGuard messageReceiverGuard;
 
     public SecurityConfig(CustomUserDetailsService userDetailsService,
+                          MessageSource messageSource,
                           MemberGuard memberGuard,
                           PostGuard postGuard,
                           CommentGuard commentGuard,
@@ -36,6 +39,7 @@ public class SecurityConfig {
                           MessageSenderGuard messageSenderGuard,
                           MessageReceiverGuard messageReceiverGuard) {
         this.userDetailsService = userDetailsService;
+        this.messageSource = messageSource;
         this.memberGuard = memberGuard;
         this.postGuard = postGuard;
         this.commentGuard = commentGuard;
@@ -62,6 +66,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sessionManagementConfigurer ->
                         sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling((exceptionConfig) ->
+                        exceptionConfig.authenticationEntryPoint(new CustomAuthenticationEntryPoint()).accessDeniedHandler(new CustomAccessDeniedHandler())
+                )
+                .addFilterBefore(new JwtAuthenticationFilter(userDetailsService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new ExpiredJwtExceptionFilter(messageSource), JwtAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize ->
                         authorize
                         .requestMatchers(HttpMethod.POST, "/api/sign-in", "/api/sign-up","/api/refresh-token").permitAll()
@@ -86,11 +95,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/messages/receiver/{id}")
                             .access((authentication, context) -> new AuthorizationDecision(messageReceiverGuard.check(Long.parseLong(context.getVariables().get("id")))))
                         .requestMatchers(HttpMethod.GET, "/api/**","/image/**").permitAll()
-                        .anyRequest().hasAnyRole("ADMIN"))
-                .exceptionHandling((exceptionConfig) ->
-                        exceptionConfig.authenticationEntryPoint(new CustomAuthenticationEntryPoint()).accessDeniedHandler(new CustomAccessDeniedHandler())
-                )
-                .addFilterBefore(new JwtAuthenticationFilter(userDetailsService), UsernamePasswordAuthenticationFilter.class);
+                        .anyRequest().hasAnyRole("ADMIN"));
         return http.build();
     }
 

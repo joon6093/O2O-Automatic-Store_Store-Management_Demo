@@ -3,6 +3,7 @@ package com.SJY.O2O_Automatic_Store_System_Demo.advice;
 
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.response.Response;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.*;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -107,6 +108,14 @@ public class ExceptionAdvice {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(getFailureResponse("categoryNotFoundException.code", "categoryNotFoundException.msg"));
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<Response> handleExpiredJwtException(ExpiredJwtException e) {
+        log.warn("Expired JWT token - {}", e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(getFailureResponse("expiredJwtException.code", "expiredJwtException.msg"));
     }
 
     @ExceptionHandler(PostNotFoundException.class)

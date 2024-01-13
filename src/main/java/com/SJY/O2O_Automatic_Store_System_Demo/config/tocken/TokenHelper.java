@@ -1,6 +1,5 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.config.tocken;
 
-import com.SJY.O2O_Automatic_Store_System_Demo.handler.JwtHandler;
 import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
