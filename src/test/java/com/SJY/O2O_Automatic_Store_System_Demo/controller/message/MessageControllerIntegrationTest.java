@@ -83,8 +83,7 @@ public class MessageControllerIntegrationTest {
         mockMvc.perform(
                         get("/api/messages/sender")
                                 .param("size", String.valueOf(size)))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -111,8 +110,7 @@ public class MessageControllerIntegrationTest {
         mockMvc.perform(
                         get("/api/messages/receiver")
                                 .param("size", String.valueOf(size)))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -152,8 +150,7 @@ public class MessageControllerIntegrationTest {
         // when, then
         mockMvc.perform(
                         get("/api/messages/{id}", id))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -166,8 +163,7 @@ public class MessageControllerIntegrationTest {
         mockMvc.perform(
                         get("/api/messages/{id}", id)
                                 .header("Authorization", notResourceOwnerSignInRes.getAccessToken()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -195,8 +191,7 @@ public class MessageControllerIntegrationTest {
                         post("/api/messages")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -233,8 +228,7 @@ public class MessageControllerIntegrationTest {
         // when, then
         mockMvc.perform(
                         delete("/api/messages/sender/{id}", id))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -247,8 +241,7 @@ public class MessageControllerIntegrationTest {
         mockMvc.perform(
                         delete("/api/messages/sender/{id}", id)
                                 .header("Authorization", notResourceOwnerSignInRes.getAccessToken()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -285,8 +278,7 @@ public class MessageControllerIntegrationTest {
         // when, then
         mockMvc.perform(
                         delete("/api/messages/receiver/{id}", id))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -299,8 +291,6 @@ public class MessageControllerIntegrationTest {
         mockMvc.perform(
                         delete("/api/messages/receiver/{id}", id)
                                 .header("Authorization", notResourceOwnerSignInRes.getAccessToken()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(status().isForbidden());
     }
-
 }

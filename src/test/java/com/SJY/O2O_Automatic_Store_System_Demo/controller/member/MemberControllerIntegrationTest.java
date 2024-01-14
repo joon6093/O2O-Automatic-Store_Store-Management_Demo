@@ -90,8 +90,7 @@ class MemberControllerIntegrationTest {
         // when, then
         mockMvc.perform(
                         delete("/api/members/{id}", member.getId()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -103,8 +102,7 @@ class MemberControllerIntegrationTest {
         // when, then
         mockMvc.perform(
                         delete("/api/members/{id}", member.getId()).header("Authorization", attackerSignInRes.getAccessToken()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -116,8 +114,7 @@ class MemberControllerIntegrationTest {
         // when, then
         mockMvc.perform(
                         delete("/api/members/{id}", member.getId()).header("Authorization", signInRes.getRefreshToken()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
 }

@@ -10,11 +10,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 @RequiredArgsConstructor
+@Component
 public class ExpiredJwtExceptionFilter extends OncePerRequestFilter {
 
     private final MessageSource messageSource;

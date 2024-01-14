@@ -16,6 +16,8 @@ import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepositor
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.post.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,8 +75,9 @@ public class CommentService {
         return new CommentCreateResponse(comment.getId());
     }
 
+    @PreAuthorize("@commentGuard.check(#id)")
     @Transactional
-    public void delete(Long id) {
+    public void delete(@Param("id")Long id) {
         Comment comment = commentRepository.findById(id).orElseThrow(CommentNotFoundException::new);
         comment.findDeletableComment().ifPresentOrElse(
                 deletableComment -> {

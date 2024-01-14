@@ -5,6 +5,8 @@ import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.Member;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.MemberNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +27,9 @@ public class MemberService {
                 .build();
     }
 
+    @PreAuthorize("@memberGuard.check(#id)")
     @Transactional
-    public void delete(Long id) {
+    public void delete(@Param("id")Long id) {
         Member member = memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
         memberRepository.delete(member);
     }

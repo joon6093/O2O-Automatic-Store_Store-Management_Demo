@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,7 +49,8 @@ public class MessageService {
                 .build();
     }
 
-    public MessageDto read(Long id) {
+    @PreAuthorize("@messageGuard.check(#id)")
+    public MessageDto read(@Param("id")Long id) {
         Message message = messageRepository.findWithSenderAndReceiverById(id).orElseThrow(MessageNotFoundException::new);
         return MessageDto.builder()
                 .id(message.getId())
@@ -74,15 +77,17 @@ public class MessageService {
         return new MessageCreateResponse(message.getId());
     }
 
+    @PreAuthorize("@messageSenderGuard.check(#id)")
     @Transactional
-    public void deleteBySender(Long id) {
+    public void deleteBySender(@Param("id")Long id) {
         delete(id, message -> {
             message.deleteBySender();
         });
     }
 
+    @PreAuthorize("@messageReceiverGuard.check(#id)")
     @Transactional
-    public void deleteByReceiver(Long id) {
+    public void deleteByReceiver(@Param("id")Long id) {
         delete(id, message -> {
             message.deleteByReceiver();
         });

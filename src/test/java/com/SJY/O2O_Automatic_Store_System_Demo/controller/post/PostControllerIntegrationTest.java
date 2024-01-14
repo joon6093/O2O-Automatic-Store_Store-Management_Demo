@@ -36,7 +36,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -120,8 +119,7 @@ public class PostControllerIntegrationTest {
                                     return requestPostProcessor;
                                 })
                                 .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -175,8 +173,7 @@ public class PostControllerIntegrationTest {
         mockMvc.perform(
                         delete("/api/posts/{id}", post.getId())
                                 .header("Authorization", notOwnerSignInRes.getAccessToken()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -187,8 +184,7 @@ public class PostControllerIntegrationTest {
         // when, then
         mockMvc.perform(
                         delete("/api/posts/{id}", post.getId()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -268,8 +264,7 @@ public class PostControllerIntegrationTest {
                                     return requestPostProcessor;
                                 })
                                 .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -293,8 +288,7 @@ public class PostControllerIntegrationTest {
                                 })
                                 .contentType(MediaType.MULTIPART_FORM_DATA)
                                 .header("Authorization", notOwnerSignInRes.getAccessToken()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(status().isForbidden());
     }
 
     @Test

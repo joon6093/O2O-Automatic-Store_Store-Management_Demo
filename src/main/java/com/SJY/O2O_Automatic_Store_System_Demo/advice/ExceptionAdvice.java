@@ -10,6 +10,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,15 +34,9 @@ public class ExceptionAdvice {
                 .body(getFailureResponse("exception.code", "exception.msg"));
     }
 
-    @ExceptionHandler(AuthenticationEntryPointException.class)
-    public ResponseEntity<Response> authenticationEntryPoint() {
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(getFailureResponse("authenticationEntryPoint.code", "authenticationEntryPoint.msg"));
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<Response> accessDeniedException() {
+    @ExceptionHandler(AccessDeniedException.class) // @PreAuthorize으로 부터 발생하는 오류
+    public ResponseEntity<Response> accessDeniedException(AccessDeniedException e) {
+        log.info("e = {}", e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(getFailureResponse("accessDeniedException.code", "accessDeniedException.msg"));
@@ -72,7 +67,7 @@ public class ExceptionAdvice {
     public ResponseEntity<Response> memberEmailAlreadyExistsException(MemberEmailAlreadyExistsException e) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
-                .body(getFailureResponse("memberEmailAlreadyExistsException.code", "memberEmailAlreadyExistsException.msg"));
+                .body(getFailureResponse("memberEmailAlreadyExistsException.code", "memberEmailAlreadyExistsException.msg", e.getMessage()));
     }
 
     @ExceptionHandler(MemberNicknameAlreadyExistsException.class)
@@ -110,9 +105,8 @@ public class ExceptionAdvice {
                 .body(getFailureResponse("categoryNotFoundException.code", "categoryNotFoundException.msg"));
     }
 
-    @ExceptionHandler(ExpiredJwtException.class)
+    @ExceptionHandler(ExpiredJwtException.class) // refreshTokenHelper.parse(rToken)으로 부터 발생하는 오류
     public ResponseEntity<Response> handleExpiredJwtException(ExpiredJwtException e) {
-        log.warn("Expired JWT token - {}", e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(getFailureResponse("expiredJwtException.code", "expiredJwtException.msg"));

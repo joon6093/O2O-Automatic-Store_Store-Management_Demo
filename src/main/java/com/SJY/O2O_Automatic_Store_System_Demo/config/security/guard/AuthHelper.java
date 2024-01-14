@@ -1,6 +1,5 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard;
 
-import com.SJY.O2O_Automatic_Store_System_Demo.config.security.CustomAuthenticationToken;
 import com.SJY.O2O_Automatic_Store_System_Demo.config.security.CustomUserDetails;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.member.RoleType;
 import lombok.AccessLevel;
@@ -13,10 +12,6 @@ import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthHelper {
-
-    public static boolean isAuthenticated() {
-        return (getAuthentication() instanceof CustomAuthenticationToken) && (getAuthentication().isAuthenticated());
-    }
 
     public static Long extractMemberId() {
         return Long.valueOf(getUserDetails().getUserId());

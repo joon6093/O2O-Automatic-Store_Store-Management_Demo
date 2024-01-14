@@ -9,21 +9,18 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
-@RequestMapping("/api/messages")
 public class MessageController {
     private final MessageService messageService;
 
     @Operation(summary = "송신자의 쪽지 목록 조회", description = "송신자의 쪽지 목록을 조회한다.")
-    @GetMapping("/sender")
     @AssignMemberId
+    @GetMapping("/api/messages/sender")
     public ResponseEntity<Response> readAllBySender(@Parameter(description = "쪽지 조회 조건") @Valid @ModelAttribute MessageReadCondition cond) {
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -31,8 +28,8 @@ public class MessageController {
     }
 
     @Operation(summary = "수신자의 쪽지 목록 조회", description = "수신자의 쪽지 목록을 조회한다.")
-    @GetMapping("/receiver")
     @AssignMemberId
+    @GetMapping("/api/messages/receiver")
     public ResponseEntity<Response> readAllByReceiver(@Parameter(description = "쪽지 조회 조건") @Valid @ModelAttribute MessageReadCondition cond) {
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -40,8 +37,8 @@ public class MessageController {
     }
 
     @Operation(summary = "쪽지 조회", description = "쪽지를 조회한다.")
-    @GetMapping("/{id}")
-    public ResponseEntity<Response> read(@Parameter(description = "쪽지 id") @PathVariable(name = "id") Long id) {
+    @GetMapping("/api/messages/{id}")
+    public ResponseEntity<Response> read(@Parameter(description = "쪽지 id") @PathVariable(name = "id")Long id) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(Response.success(messageService.read(id)));
@@ -49,7 +46,7 @@ public class MessageController {
 
     @Operation(summary = "쪽지 생성", description = "쪽지를 생성한다.")
     @AssignMemberId
-    @PostMapping
+    @PostMapping("/api/messages")
     public ResponseEntity<Response> create(@Parameter(description = "쪽지 생성 요청") @Valid @RequestBody MessageCreateRequest req) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -57,8 +54,8 @@ public class MessageController {
     }
 
     @Operation(summary = "송신자의 쪽지 삭제", description = "송신자의 쪽지를 삭제한다.")
-    @DeleteMapping("/sender/{id}")
-    public ResponseEntity<Response> deleteBySender(@Parameter(description = "쪽지 id") @PathVariable(name = "id") Long id) {
+    @DeleteMapping("/api/messages/sender/{id}")
+    public ResponseEntity<Response> deleteBySender(@Parameter(description = "쪽지 id") @PathVariable(name = "id")Long id) {
         messageService.deleteBySender(id);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -66,8 +63,8 @@ public class MessageController {
     }
 
     @Operation(summary = "수신자의 쪽지 삭제", description = "수신자의 쪽지를 삭제한다.")
-    @DeleteMapping("/receiver/{id}")
-    public ResponseEntity<Response> deleteByReceiver(@Parameter(description = "쪽지 id") @PathVariable(name = "id") Long id) {
+    @DeleteMapping("/api/messages/receiver/{id}")
+    public ResponseEntity<Response> deleteByReceiver(@Parameter(description = "쪽지 id") @PathVariable(name = "id")Long id) {
         messageService.deleteByReceiver(id);
         return ResponseEntity
                 .status(HttpStatus.OK)

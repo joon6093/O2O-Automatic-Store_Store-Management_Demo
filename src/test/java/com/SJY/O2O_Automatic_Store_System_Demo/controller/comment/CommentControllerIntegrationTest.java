@@ -38,7 +38,6 @@ import static com.SJY.O2O_Automatic_Store_System_Demo.factory.entity.PostFactory
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -119,8 +118,7 @@ class CommentControllerIntegrationTest {
                         post("/api/comments")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -160,8 +158,7 @@ class CommentControllerIntegrationTest {
 
         // when, then
         mockMvc.perform(delete("/api/comments/{id}", comment.getId()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -174,7 +171,6 @@ class CommentControllerIntegrationTest {
         mockMvc.perform(
                         delete("/api/comments/{id}", comment.getId())
                                 .header("Authorization", notOwnerSignInRes.getAccessToken()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(status().isForbidden());
     }
 }

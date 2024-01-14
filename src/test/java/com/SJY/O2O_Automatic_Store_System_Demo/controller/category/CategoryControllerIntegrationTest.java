@@ -1,9 +1,9 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.controller.category;
 
+import com.SJY.O2O_Automatic_Store_System_Demo.TestInitDB;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.category.CategoryCreateRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignInResponse;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.category.Category;
-import com.SJY.O2O_Automatic_Store_System_Demo.TestInitDB;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.category.CategoryRepository;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.member.MemberRepository;
 import com.SJY.O2O_Automatic_Store_System_Demo.service.sign.SignService;
@@ -27,7 +27,6 @@ import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.SignInRequestF
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -93,8 +92,7 @@ public class CategoryControllerIntegrationTest {
                         post("/api/categories")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -109,8 +107,7 @@ public class CategoryControllerIntegrationTest {
                                 .header("Authorization", normalMemberSignInRes.getAccessToken())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -135,8 +132,7 @@ public class CategoryControllerIntegrationTest {
 
         // when, then
         mockMvc.perform(delete("/api/categories/{id}", id))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/entry-point"));
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -148,7 +144,6 @@ public class CategoryControllerIntegrationTest {
         // when, then
         mockMvc.perform(delete("/api/categories/{id}", id)
                         .header("Authorization", normalMemberSignInRes.getAccessToken()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/exception/access-denied"));
+                .andExpect(status().isForbidden());
     }
 }

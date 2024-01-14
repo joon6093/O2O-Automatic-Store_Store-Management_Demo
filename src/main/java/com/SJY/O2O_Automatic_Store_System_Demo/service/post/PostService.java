@@ -15,6 +15,8 @@ import com.SJY.O2O_Automatic_Store_System_Demo.repository.post.PostRepository;
 import com.SJY.O2O_Automatic_Store_System_Demo.service.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,8 +73,9 @@ public class PostService {
     }
 
 
+    @PreAuthorize("@postGuard.check(#id)")
     @Transactional
-    public void delete(Long id) {
+    public void delete(@Param("id")Long id) {
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         deleteImages(post.getImages());
         post.removeImages(post.getImages());
@@ -83,8 +86,9 @@ public class PostService {
         images.forEach(i -> fileService.delete(i.getUniqueName()));
     }
 
+    @PreAuthorize("@postGuard.check(#id)")
     @Transactional
-    public PostUpdateResponse update(Long id, PostUpdateRequest req) {
+    public PostUpdateResponse update(@Param("id")Long id, PostUpdateRequest req) {
         Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
         Post.ImageUpdatedResult result = post.update(req);
         uploadImages(result.getAddedImages(), result.getAddedImageFiles());

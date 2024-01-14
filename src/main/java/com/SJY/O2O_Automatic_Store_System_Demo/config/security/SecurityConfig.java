@@ -1,13 +1,12 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.config.security;
 
-import com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -20,36 +19,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-    private final CustomUserDetailsService userDetailsService;
-    private final MessageSource messageSource;
-    private final MemberGuard memberGuard;
-    private final PostGuard postGuard;
-    private final CommentGuard commentGuard;
-    private final MessageGuard messageGuard;
-    private final MessageSenderGuard messageSenderGuard;
-    private final MessageReceiverGuard messageReceiverGuard;
 
-    public SecurityConfig(CustomUserDetailsService userDetailsService,
-                          MessageSource messageSource,
-                          MemberGuard memberGuard,
-                          PostGuard postGuard,
-                          CommentGuard commentGuard,
-                          MessageGuard messageGuard,
-                          MessageSenderGuard messageSenderGuard,
-                          MessageReceiverGuard messageReceiverGuard) {
-        this.userDetailsService = userDetailsService;
-        this.messageSource = messageSource;
-        this.memberGuard = memberGuard;
-        this.postGuard = postGuard;
-        this.commentGuard = commentGuard;
-        this.messageGuard = messageGuard;
-        this.messageSenderGuard = messageSenderGuard;
-        this.messageReceiverGuard = messageReceiverGuard;
-    }
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final ExpiredJwtExceptionFilter expiredJwtExceptionFilter;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().requestMatchers("/exception/**","/swagger-ui/**","/v3/api-docs/**");
+        return web -> web.ignoring().requestMatchers("/swagger-ui/**","/v3/api-docs/**");
     }
 
     @Bean
@@ -67,33 +48,26 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagementConfigurer ->
                         sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling((exceptionConfig) ->
-                        exceptionConfig.authenticationEntryPoint(new CustomAuthenticationEntryPoint()).accessDeniedHandler(new CustomAccessDeniedHandler())
+                        exceptionConfig.authenticationEntryPoint(customAuthenticationEntryPoint).accessDeniedHandler(customAccessDeniedHandler)
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(userDetailsService), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new ExpiredJwtExceptionFilter(messageSource), JwtAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(expiredJwtExceptionFilter, JwtAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize ->
                         authorize
                         .requestMatchers(HttpMethod.POST, "/api/sign-in", "/api/sign-up","/api/refresh-token").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/members/{id}/**")
-                                .access((authentication, context) -> new AuthorizationDecision(memberGuard.check(Long.parseLong(context.getVariables().get("id")))))
+                        .requestMatchers(HttpMethod.DELETE, "/api/members/{id}/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/posts").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/api/posts/{id}/**")
-                            .access((authentication, context) -> new AuthorizationDecision(postGuard.check(Long.parseLong(context.getVariables().get("id")))))
-                        .requestMatchers(HttpMethod.DELETE, "/api/posts/{id}/**")
-                            .access((authentication, context) -> new AuthorizationDecision(postGuard.check(Long.parseLong(context.getVariables().get("id")))))
+                        .requestMatchers(HttpMethod.PUT, "/api/posts/{id}/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/posts/{id}/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/comments").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/comments/{id}/**")
-                            .access((authentication, context) -> new AuthorizationDecision(commentGuard.check(Long.parseLong(context.getVariables().get("id")))))
+                        .requestMatchers(HttpMethod.DELETE, "/api/comments/{id}/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/messages/sender", "/api/messages/receiver").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/messages/{id}")
-                            .access((authentication, context) -> new AuthorizationDecision(messageGuard.check(Long.parseLong(context.getVariables().get("id")))))
+                        .requestMatchers(HttpMethod.GET, "/api/messages/{id}").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/messages").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/messages/sender/{id}")
-                            .access((authentication, context) -> new AuthorizationDecision(messageSenderGuard.check(Long.parseLong(context.getVariables().get("id")))))
-                        .requestMatchers(HttpMethod.DELETE, "/api/messages/receiver/{id}")
-                            .access((authentication, context) -> new AuthorizationDecision(messageReceiverGuard.check(Long.parseLong(context.getVariables().get("id")))))
+                        .requestMatchers(HttpMethod.DELETE, "/api/messages/sender/{id}").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/messages/receiver/{id}").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/**","/image/**").permitAll()
                         .anyRequest().hasAnyRole("ADMIN"));
         return http.build();
