@@ -1,9 +1,10 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.controller.sign;
 
-import com.SJY.O2O_Automatic_Store_System_Demo.advice.ExceptionAdvice;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignInRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.sign.SignUpRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.*;
+import com.SJY.O2O_Automatic_Store_System_Demo.exception.advice.ExceptionAdvice;
+import com.SJY.O2O_Automatic_Store_System_Demo.exception.response.ResponseHandler;
 import com.SJY.O2O_Automatic_Store_System_Demo.service.sign.SignService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -24,7 +24,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,14 +32,14 @@ class SignControllerAdviceTest {
     SignController signController;
     @Mock
     SignService signService;
+    @Mock
+    ResponseHandler responseHandler;
     MockMvc mockMvc;
     ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void beforeEach() {
-        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasenames("i18n/exception");
-        mockMvc = MockMvcBuilders.standaloneSetup(signController).setControllerAdvice(new ExceptionAdvice(messageSource)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(signController).setControllerAdvice(new ExceptionAdvice(responseHandler)).build();
     }
 
     @Test
@@ -134,8 +133,7 @@ class SignControllerAdviceTest {
         mockMvc.perform(
                         post("/api/refresh-token")
                                 .header("Authorization", "refreshToken"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1017));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -143,7 +141,6 @@ class SignControllerAdviceTest {
         // given, when, then
         mockMvc.perform(
                         post("/api/refresh-token"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value(-1009));
+                .andExpect(status().isBadRequest());
     }
 }

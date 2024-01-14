@@ -25,7 +25,7 @@ public class MessageSenderGuard extends Guard {
         return messageRepository.findById(id)
                 .map(message -> message.getSender())
                 .map(sender -> sender.getId())
-                .filter(senderId -> senderId.equals(AuthHelper.extractMemberId()))
+                .filter(senderId -> senderId.equals(AuthHandler.extractMemberId()))
                 .isPresent();
     }
 }

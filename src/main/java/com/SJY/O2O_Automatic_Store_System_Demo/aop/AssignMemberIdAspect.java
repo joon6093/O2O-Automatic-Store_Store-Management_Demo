@@ -1,6 +1,6 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.aop;
 
-import com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard.AuthHelper;
+import com.SJY.O2O_Automatic_Store_System_Demo.config.security.guard.AuthHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
@@ -38,7 +38,7 @@ public class AssignMemberIdAspect {
         // memberId 할당 로직
         Arrays.stream(args)
                 .forEach(arg -> getMethod(arg.getClass(), "setMemberId")
-                        .ifPresent(setMemberId -> invokeMethod(arg, setMemberId, AuthHelper.extractMemberId())));
+                        .ifPresent(setMemberId -> invokeMethod(arg, setMemberId, AuthHandler.extractMemberId())));
     }
 
     private Optional<Method> getMethod(Class<?> clazz, String methodName) {

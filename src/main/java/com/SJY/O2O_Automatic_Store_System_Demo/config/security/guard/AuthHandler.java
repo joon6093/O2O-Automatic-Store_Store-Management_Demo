@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class AuthHelper {
+public class AuthHandler {
 
     public static Long extractMemberId() {
         return Long.valueOf(getUserDetails().getUserId());

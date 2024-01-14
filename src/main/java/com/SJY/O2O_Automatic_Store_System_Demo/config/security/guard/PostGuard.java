@@ -25,7 +25,7 @@ public class PostGuard extends Guard {
         return postRepository.findById(id)
                 .map(post -> post.getMember())
                 .map(member -> member.getId())
-                .filter(memberId -> memberId.equals(AuthHelper.extractMemberId()))
+                .filter(memberId -> memberId.equals(AuthHandler.extractMemberId()))
                 .isPresent();
     }
 }

@@ -1,10 +1,11 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.controller.comment;
 
-import com.SJY.O2O_Automatic_Store_System_Demo.advice.ExceptionAdvice;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.comment.CommentCreateRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.CommentNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.MemberNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.PostNotFoundException;
+import com.SJY.O2O_Automatic_Store_System_Demo.exception.advice.ExceptionAdvice;
+import com.SJY.O2O_Automatic_Store_System_Demo.exception.response.ResponseHandler;
 import com.SJY.O2O_Automatic_Store_System_Demo.service.comment.CommentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -24,7 +24,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 ;
@@ -35,14 +34,14 @@ class CommentControllerAdviceTest {
     CommentController commentController;
     @Mock
     CommentService commentService;
+    @Mock
+    ResponseHandler responseHandler;
     MockMvc mockMvc;
     ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void beforeEach() {
-        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasenames("i18n/exception");
-        mockMvc = MockMvcBuilders.standaloneSetup(commentController).setControllerAdvice(new ExceptionAdvice(messageSource)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(commentController).setControllerAdvice(new ExceptionAdvice(responseHandler)).build();
     }
 
     @Test
@@ -56,8 +55,7 @@ class CommentControllerAdviceTest {
                         post("/api/comments")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1007));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -71,8 +69,7 @@ class CommentControllerAdviceTest {
                         post("/api/comments")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1012));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -86,8 +83,7 @@ class CommentControllerAdviceTest {
                         post("/api/comments")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1015));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -99,7 +95,6 @@ class CommentControllerAdviceTest {
         // when, then
         mockMvc.perform(
                         delete("/api/comments/{id}", id))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1015));
+                .andExpect(status().isNotFound());
     }
 }

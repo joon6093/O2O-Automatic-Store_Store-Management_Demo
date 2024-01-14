@@ -21,7 +21,7 @@ public class Response {
             return new Response(true, 0, new Success<>(data));
         }
 
-        public static Response failure(int code, String msg) { // 6
+        public static Response failure(int code, String msg) {
         return new Response(false, code, new Failure(msg));
     }
 }

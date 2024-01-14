@@ -25,7 +25,7 @@ public class CommentGuard extends Guard {
         return commentRepository.findById(id)
                 .map(comment -> comment.getMember())
                 .map(member -> member.getId())
-                .filter(memberId -> memberId.equals(AuthHelper.extractMemberId()))
+                .filter(memberId -> memberId.equals(AuthHandler.extractMemberId()))
                 .isPresent();
     }
 }

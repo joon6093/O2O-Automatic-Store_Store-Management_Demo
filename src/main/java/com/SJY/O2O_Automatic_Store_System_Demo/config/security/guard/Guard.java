@@ -13,6 +13,6 @@ public abstract class Guard {
     abstract protected boolean isResourceOwner(Long id);
 
     private boolean hasRole(List<RoleType> roleTypes) {
-        return AuthHelper.extractMemberRoles().containsAll(roleTypes);
+        return AuthHandler.extractMemberRoles().containsAll(roleTypes);
     }
 }

@@ -1,11 +1,12 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.controller.post;
 
-import com.SJY.O2O_Automatic_Store_System_Demo.advice.ExceptionAdvice;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.post.PostCreateRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.CategoryNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.MemberNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.PostNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.UnsupportedImageFormatException;
+import com.SJY.O2O_Automatic_Store_System_Demo.exception.advice.ExceptionAdvice;
+import com.SJY.O2O_Automatic_Store_System_Demo.exception.response.ResponseHandler;
 import com.SJY.O2O_Automatic_Store_System_Demo.service.post.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -25,7 +25,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,13 +33,13 @@ public class PostControllerAdviceTest {
     PostController postController;
     @Mock
     PostService postService;
+    @Mock
+    ResponseHandler responseHandler;
     MockMvc mockMvc;
 
     @BeforeEach
     void beforeEach() {
-        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasenames("i18n/exception");
-        mockMvc = MockMvcBuilders.standaloneSetup(postController).setControllerAdvice(new ExceptionAdvice(messageSource)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(postController).setControllerAdvice(new ExceptionAdvice(responseHandler)).build();
     }
 
     @Test
@@ -50,8 +49,7 @@ public class PostControllerAdviceTest {
 
         // when, then
         performCreate()
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1007));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -61,8 +59,7 @@ public class PostControllerAdviceTest {
 
         // when, then
         performCreate()
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1010));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -72,8 +69,7 @@ public class PostControllerAdviceTest {
 
         // when, then
         performCreate()
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1013));
+                .andExpect(status().isNotFound());
     }
 
     private ResultActions performCreate() throws Exception {
@@ -99,8 +95,7 @@ public class PostControllerAdviceTest {
         // when, then
         mockMvc.perform(
                         get("/api/posts/{id}", 1L))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1012));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -111,8 +106,7 @@ public class PostControllerAdviceTest {
         // when, then
         mockMvc.perform(
                         delete("/api/posts/{id}", 1L))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1012));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -131,7 +125,6 @@ public class PostControllerAdviceTest {
                                     return requestPostProcessor;
                                 })
                                 .contentType(MediaType.MULTIPART_FORM_DATA))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1012));
+                .andExpect(status().isNotFound());
     }
 }

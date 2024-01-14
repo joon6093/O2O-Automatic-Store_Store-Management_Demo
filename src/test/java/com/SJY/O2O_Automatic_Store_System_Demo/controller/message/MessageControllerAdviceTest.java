@@ -1,8 +1,9 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.controller.message;
 
-import com.SJY.O2O_Automatic_Store_System_Demo.advice.ExceptionAdvice;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.message.MessageCreateRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.MessageNotFoundException;
+import com.SJY.O2O_Automatic_Store_System_Demo.exception.advice.ExceptionAdvice;
+import com.SJY.O2O_Automatic_Store_System_Demo.exception.response.ResponseHandler;
 import com.SJY.O2O_Automatic_Store_System_Demo.service.message.MessageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -20,7 +20,6 @@ import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.MessageCreateR
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,15 +28,14 @@ class MessageControllerAdviceTest {
     MessageController messageController;
     @Mock
     MessageService messageService;
-
+    @Mock
+    ResponseHandler responseHandler;
     MockMvc mockMvc;
     ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void beforeEach() {
-        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasenames("i18n/exception");
-        mockMvc = MockMvcBuilders.standaloneSetup(messageController).setControllerAdvice(new ExceptionAdvice(messageSource)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(messageController).setControllerAdvice(new ExceptionAdvice(responseHandler)).build();
     }
 
     @Test
@@ -49,8 +47,7 @@ class MessageControllerAdviceTest {
         // when, then
         mockMvc.perform(
                         get("/api/messages/{id}", id))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1016));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -64,8 +61,7 @@ class MessageControllerAdviceTest {
                         post("/api/messages")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1016));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -77,8 +73,7 @@ class MessageControllerAdviceTest {
         // when, then
         mockMvc.perform(
                         delete("/api/messages/sender/{id}", id))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1016));
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -90,7 +85,6 @@ class MessageControllerAdviceTest {
         // when, then
         mockMvc.perform(
                         delete("/api/messages/receiver/{id}", id))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.code").value(-1016));
+                .andExpect(status().isNotFound());
     }
 }

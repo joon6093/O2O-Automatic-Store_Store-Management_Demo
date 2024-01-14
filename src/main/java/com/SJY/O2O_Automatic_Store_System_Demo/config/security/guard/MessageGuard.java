@@ -24,8 +24,8 @@ public class MessageGuard extends Guard{
     protected boolean isResourceOwner(Long id) {
         return messageRepository.findWithSenderAndReceiverById(id)
                 .map(message ->
-                        message.getSender().getId().equals(AuthHelper.extractMemberId()) ||
-                        message.getReceiver().getId().equals(AuthHelper.extractMemberId()))
+                        message.getSender().getId().equals(AuthHandler.extractMemberId()) ||
+                        message.getReceiver().getId().equals(AuthHandler.extractMemberId()))
                 .orElse(false);
     }
 }
