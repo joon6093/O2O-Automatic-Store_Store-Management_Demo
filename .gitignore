@@ -42,3 +42,6 @@ out/
 ### Test Image ###
 /src/test/resources/static/*
 /images
+
+### Database Info ###
+src/main/resources/application-db.yml
