@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.1'
 	id 'io.spring.dependency-management' version '1.1.4'
+	id 'jacoco' // jacoco
 }
 
 group = 'com.SJY'
@@ -45,7 +46,8 @@ dependencies {
 	// Test Dependencies
 	testImplementation 'org.springframework.boot:spring-boot-starter-test' // Spring Boot Test
 	testImplementation 'org.springframework.security:spring-security-test' // Spring Security Test
-	testImplementation 'org.projectlombok:lombok:1.18.28' // Lombok for testing
+	testImplementation 'org.projectlombok:lombok' // Lombok for testing
+	testAnnotationProcessor 'org.projectlombok:lombok' // Lombok for testing
 
 	// SpringDoc - OpenAPI 3
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0' // SpringDoc for OpenAPI UI
@@ -57,6 +59,79 @@ dependencies {
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api" // Jakarta Persistence API
 }
 
-tasks.named('test') {
+test {
 	useJUnitPlatform()
+	finalizedBy jacocoTestReport // Generates report after tests are run
+}
+
+// JaCoCo configuration
+jacoco {
+	toolVersion = "0.8.10"
+	reportsDirectory = layout.buildDirectory.dir('jacocoReport')
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = false
+		csv.required = false
+		html.required = true
+	}
+	def Qdomains = []
+	for (qPattern in '**/QA'..'**/QZ') { // qPattern = '**/QA', '**/QB', ... '*.QZ'
+		Qdomains.add(qPattern + '*')
+	}
+	afterEvaluate {
+		classDirectories.setFrom(files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: [
+					'**/dto/**',
+					'**/event/**',
+					'**/*InitData*',
+					'**/*Application*',
+					'**/exception/**',
+					'**/service/alarm/**',
+					'**/aop/**',
+					'**/config/**',
+					'**/MemberRole*'
+			] + Qdomains)
+		}))
+	}
+	finalizedBy 'jacocoTestCoverageVerification'
+}
+
+jacocoTestCoverageVerification {
+	def Qdomains = []
+	for (qPattern in '*.QA'..'*.QZ') { // qPattern = '*.QA', '*.QB', ... '*.QZ'
+		Qdomains.add(qPattern + '*')
+	}
+	violationRules {
+		rule {
+			enabled = true;
+			element = 'CLASS'
+
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0.80
+			}
+
+			limit {
+				counter = 'BRANCH'
+				value = 'COVEREDRATIO'
+				minimum = 0.80
+			}
+
+			excludes = [
+					'**.dto.**',
+					'**.event.**',
+					'**.*InitData*',
+					'**.*Application*',
+					'**.exception.**',
+					'**.service.alarm.**',
+					'**.aop.**',
+					'**.config.**',
+					'**.MemberRole*'
+			] + Qdomains
+		}
+	}
 }

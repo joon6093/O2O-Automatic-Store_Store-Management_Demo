@@ -113,7 +113,7 @@ public class CategoryControllerIntegrationTest {
     @Test
     void deleteTest() throws Exception {
         // given
-        Long id = categoryRepository.findAll().get(0).getId();
+        Long id = categoryRepository.findAll().get(1).getId();
         SignInResponse adminSignInRes = signService.signIn(createSignInRequest(initDB.getAdminEmail(), initDB.getPassword()));
 
         // when, then
@@ -122,7 +122,7 @@ public class CategoryControllerIntegrationTest {
                 .andExpect(status().isOk());
 
         List<Category> result = categoryRepository.findAll();
-        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.size()).isEqualTo(4);
     }
 
     @Test

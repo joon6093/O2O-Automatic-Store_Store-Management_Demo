@@ -9,4 +9,8 @@ public class CategoryCreateRequestFactory {
     public static CategoryCreateRequest createCategoryCreateRequestWithName(String name) {
         return new CategoryCreateRequest(name, null);
     }
+
+    public static CategoryCreateRequest createCategoryCreateRequestWithParentId(Long parentId) {
+        return new CategoryCreateRequest("category", parentId);
+    }
 }
