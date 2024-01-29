@@ -16,4 +16,4 @@ spring:
     show-sql: true
 upload:
   image:
-    location: images/
+    location: /app/images/
