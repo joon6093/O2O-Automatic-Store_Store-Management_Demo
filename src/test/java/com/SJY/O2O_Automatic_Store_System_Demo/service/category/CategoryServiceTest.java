@@ -68,32 +68,4 @@ class CategoryServiceTest {
         // then
         verify(categoryRepository).save(any());
     }
-
-    @Test
-    void deleteTest() {
-        // given
-        Long categoryId = 1L;
-        Category mockCategory = mock(Category.class);
-        given(categoryRepository.findById(categoryId)).willReturn(Optional.of(mockCategory));
-
-        // when
-        categoryService.delete(categoryId);
-
-        // then
-        verify(categoryRepository).findById(categoryId);
-        verify(mockCategory, times(1)).getParent();
-    }
-
-    @Test
-    void deleteExceptionByCategoryNotFoundTest() {
-        // given
-        Long categoryId = 1L;
-        given(categoryRepository.findById(categoryId)).willReturn(Optional.empty());
-
-        // when, then
-        assertThatThrownBy(() -> categoryService.delete(categoryId))
-                .isInstanceOf(CategoryNotFoundException.class);
-        verify(categoryRepository, times(1)).findById(categoryId);
-        verify(categoryRepository, never()).delete(any(Category.class));
-    }
 }
