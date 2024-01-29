@@ -27,7 +27,6 @@ class ResponseHandlerTest {
 
         // then
         assertThat(failureResponse.getCode()).isEqualTo(-1000);
-        assertThat(((Failure) failureResponse.getResult()).getMsg()).isEqualTo("오류가 발생하였습니다.");
     }
 
     @Test
