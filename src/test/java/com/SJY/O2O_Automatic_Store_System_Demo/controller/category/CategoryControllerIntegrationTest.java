@@ -110,6 +110,8 @@ public class CategoryControllerIntegrationTest {
                 .andExpect(status().isForbidden());
     }
 
+
+    
     @Test
     void deleteTest() throws Exception {
         // given
