@@ -92,7 +92,7 @@ public class CategoryControllerIntegrationTest {
                         post("/api/categories")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(req)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test

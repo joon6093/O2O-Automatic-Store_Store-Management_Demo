@@ -3,6 +3,7 @@ package com.SJY.O2O_Automatic_Store_System_Demo.service.category;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.category.CategoryCreateRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.category.CategoryDto;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.category.Category;
+import com.SJY.O2O_Automatic_Store_System_Demo.exception.CategoryNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.factory.entity.CategoryFactory;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.category.CategoryRepository;
 import org.junit.jupiter.api.Test;
@@ -10,14 +11,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.List;
+import java.util.Optional;
 
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.CategoryCreateRequestFactory.createCategoryCreateRequest;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceTest {
@@ -64,5 +67,33 @@ class CategoryServiceTest {
 
         // then
         verify(categoryRepository).save(any());
+    }
+
+    @Test
+    void deleteTest() {
+        // given
+        Long categoryId = 1L;
+        Category mockCategory = mock(Category.class);
+        given(categoryRepository.findById(categoryId)).willReturn(Optional.of(mockCategory));
+
+        // when
+        categoryService.delete(categoryId);
+
+        // then
+        verify(categoryRepository).findById(categoryId);
+        verify(mockCategory, times(1)).getParent();
+    }
+
+    @Test
+    void deleteExceptionByCategoryNotFoundTest() {
+        // given
+        Long categoryId = 1L;
+        given(categoryRepository.findById(categoryId)).willReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> categoryService.delete(categoryId))
+                .isInstanceOf(CategoryNotFoundException.class);
+        verify(categoryRepository, times(1)).findById(categoryId);
+        verify(categoryRepository, never()).delete(any(Category.class));
     }
 }
