@@ -3,7 +3,6 @@ package com.SJY.O2O_Automatic_Store_System_Demo.service.category;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.category.CategoryCreateRequest;
 import com.SJY.O2O_Automatic_Store_System_Demo.dto.category.CategoryDto;
 import com.SJY.O2O_Automatic_Store_System_Demo.entity.category.Category;
-import com.SJY.O2O_Automatic_Store_System_Demo.exception.CategoryNotFoundException;
 import com.SJY.O2O_Automatic_Store_System_Demo.factory.entity.CategoryFactory;
 import com.SJY.O2O_Automatic_Store_System_Demo.repository.category.CategoryRepository;
 import org.junit.jupiter.api.Test;
@@ -11,16 +10,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.util.List;
-import java.util.Optional;
 
 import static com.SJY.O2O_Automatic_Store_System_Demo.factory.dto.CategoryCreateRequestFactory.createCategoryCreateRequest;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceTest {
