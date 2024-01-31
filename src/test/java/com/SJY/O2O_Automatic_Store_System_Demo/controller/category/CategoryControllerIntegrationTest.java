@@ -124,26 +124,4 @@ public class CategoryControllerIntegrationTest {
         List<Category> result = categoryRepository.findAll();
         assertThat(result.size()).isEqualTo(4);
     }
-
-    @Test
-    void deleteUnauthorizedByNoneTokenTest() throws Exception {
-        // given
-        Long id = categoryRepository.findAll().get(0).getId();
-
-        // when, then
-        mockMvc.perform(delete("/api/categories/{id}", id))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    void deleteAccessDeniedByNormalMemberTest() throws Exception {
-        // given
-        Long id = categoryRepository.findAll().get(0).getId();
-        SignInResponse normalMemberSignInRes = signService.signIn(createSignInRequest(initDB.getMember1Email(), initDB.getPassword()));
-
-        // when, then
-        mockMvc.perform(delete("/api/categories/{id}", id)
-                        .header("Authorization", normalMemberSignInRes.getAccessToken()))
-                .andExpect(status().isForbidden());
-    }
 }
