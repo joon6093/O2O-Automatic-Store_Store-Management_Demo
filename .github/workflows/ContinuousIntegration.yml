@@ -21,15 +21,15 @@ jobs:
 
       - name: Generate build cache key
         id: build-cache
-        run: echo "::set-output name=key::$(echo build-${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }})"
+        run: echo "key=$(echo build-${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }})" >> $GITHUB_OUTPUT
 
       - name: Generate unit test cache key
         id: unit-test-cache
-        run: echo "::set-output name=key::$(echo unit-test-${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }})"
+        run: echo "key=$(echo unit-test-${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }})" >> $GITHUB_OUTPUT
 
       - name: Generate code coverage cache key
         id: code-coverage-test-cache
-        run: echo "::set-output name=key::$(echo code-coverage-test-${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }})"
+        run: echo "key=$(echo code-coverage-test-${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }})" >> $GITHUB_OUTPUT
 
       - name: CI start time
         shell: bash
@@ -101,6 +101,25 @@ jobs:
       - name: Run unit tests
         run: ./gradlew test
 
+      - name: Upload unit test HTML report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unit-test-report
+          path: ${{ github.workspace }}/build/reports/tests/test/
+
+      - name: publish unit test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: ${{ github.workspace }}/build/test-results/test/TEST-*.xml
+
+      - name: add comments to a pull request
+        uses: mikepenz/action-junit-report@v4
+        if: github.event_name == 'pull_request'
+        with:
+          report_paths: ${{ github.workspace }}/build/test-results/test/TEST-*.xml
+
   code-coverage-test:
     needs: setup
     runs-on: ubuntu-latest
@@ -147,13 +166,15 @@ jobs:
           title: Code Coverage
           update-comment: true
 
-      - name: Upload Jacoco HTML Report
+      - name: Upload jacoco HTML report
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: jacoco-html-report
           path: ${{ github.workspace }}/build/jacocoReport/test/html
 
       - name: SonarCloud
+        if: always()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
