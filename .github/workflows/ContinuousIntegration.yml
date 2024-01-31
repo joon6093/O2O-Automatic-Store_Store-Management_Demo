@@ -116,7 +116,7 @@ jobs:
 
       - name: add comments to a pull request
         uses: mikepenz/action-junit-report@v4
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && always()
         with:
           report_paths: ${{ github.workspace }}/build/test-results/test/TEST-*.xml
 
@@ -156,7 +156,7 @@ jobs:
         run: ./gradlew jacocoTestReport
 
       - name: Jacoco Report to PR
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && always()
         uses: madrapps/jacoco-report@v1.6.1
         with:
           paths: ${{ github.workspace }}/build/jacocoReport/test/jacocoTestReport.xml
