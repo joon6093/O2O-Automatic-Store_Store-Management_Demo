@@ -5,16 +5,56 @@ on:
     branches:
       - main
   pull_request:
-    branches:
-      - main
-      
+    types: [opened, synchronize, reopened]
+
 permissions: write-all
 
 jobs:
-  ContinuousIntegration:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      build-cache-key: ${{ steps.build-cache.outputs.key }}
+      unit-test-cache-key: ${{ steps.unit-test-cache.outputs.key }}
+      code-coverage-test-cache-key: ${{ steps.code-coverage-test-cache.outputs.key }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate build cache key
+        id: build-cache
+        run: echo "::set-output name=key::$(echo build-${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }})"
+
+      - name: Generate unit test cache key
+        id: unit-test-cache
+        run: echo "::set-output name=key::$(echo unit-test-${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }})"
+
+      - name: Generate code coverage cache key
+        id: code-coverage-test-cache
+        run: echo "::set-output name=key::$(echo code-coverage-test-${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }})"
+
+      - name: CI start time
+        shell: bash
+        run: echo "START_TIME=$(TZ=":Asia/Seoul" date -R|sed 's/.....$//')"
+
+  build:
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Cache Gradle packages
+        id: cache-gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ needs.setup.outputs.build-cache-key }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Cache Check
+        if: steps.cache-gradle.outputs.cache-hit == 'true'
+        run: echo 'Gradle cache hit!'
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -25,31 +65,88 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
+      - name: Build with Gradle
+        run: ./gradlew build
+
+  unit-test:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Gradle packages
+        id: cache-gradle
+        uses: actions/cache@v4
         with:
-          arguments: build
-          cache-read-only: ${{ github.ref != 'refs/heads/main' && github.ref != 'refs/heads/dev' }}
-          
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ needs.setup.outputs.unit-test-cache-key }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Cache Check
+        if: steps.cache-gradle.outputs.cache-hit == 'true'
+        run: echo 'Gradle cache hit!'
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run unit tests
+        run: ./gradlew test
+
+  code-coverage-test:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Gradle packages
+        id: cache-gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ needs.setup.outputs.code-coverage-test-cache-key }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Cache Check
+        if: steps.cache-gradle.outputs.cache-hit == 'true'
+        run: echo 'Gradle cache hit!'
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Generate Jacoco Report
+        run: ./gradlew jacocoTestReport
+
       - name: Jacoco Report to PR
-        id: jacoco
+        if: github.event_name == 'pull_request'
         uses: madrapps/jacoco-report@v1.6.1
         with:
           paths: ${{ github.workspace }}/build/jacocoReport/test/jacocoTestReport.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: 80
           min-coverage-changed-files: 80
-          debug-mode: false
           title: Code Coverage
           update-comment: true
-          
-      - name: Upload Jacoco Report
-        uses: 'actions/upload-artifact@v4'
+
+      - name: Upload Jacoco HTML Report
+        uses: actions/upload-artifact@v4
         with:
-          name: html-report
-          path: ${{ github.workspace }}/build/jacocoReport/test/html/
-          
-      - name: Get the Coverage info
-        run: |
-          echo "Total coverage ${{ steps.jacoco.outputs.coverage-overall }}"
-          echo "Changed Files coverage ${{ steps.jacoco.outputs.coverage-changed-files }}"
+          name: jacoco-html-report
+          path: ${{ github.workspace }}/build/jacocoReport/test/html
