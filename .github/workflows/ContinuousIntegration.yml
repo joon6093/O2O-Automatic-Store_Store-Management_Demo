@@ -106,6 +106,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Cache Gradle packages
         id: cache-gradle
@@ -150,3 +152,9 @@ jobs:
         with:
           name: jacoco-html-report
           path: ${{ github.workspace }}/build/jacocoReport/test/html
+
+      - name: SonarCloud
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./gradlew sonar
