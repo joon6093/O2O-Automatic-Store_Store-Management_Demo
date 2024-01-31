@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static com.SJY.O2O_Automatic_Store_System_Demo.entity.post.QPost.post;
@@ -38,7 +39,7 @@ public class CustomPostRepositoryImpl extends QuerydslRepositorySupport implemen
     }
 
     private List<PostSimpleDto> fetchAll(Predicate predicate, Pageable pageable) {
-        return getQuerydsl().applyPagination(
+        return Objects.requireNonNull(getQuerydsl()).applyPagination(
                 pageable,
                 jpaQueryFactory
                         .select(constructor(PostSimpleDto.class, post.id, post.title, post.member.nickname, post.createdAt))

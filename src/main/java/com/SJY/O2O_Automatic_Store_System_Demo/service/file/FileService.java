@@ -1,5 +1,6 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.service.file;
 
+import com.SJY.O2O_Automatic_Store_System_Demo.exception.FileDeleteFailureException;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.FileUploadFailureException;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,10 @@ public class FileService {
     }
 
     public void delete(String filename) {
-        new File(location + filename).delete();
+        File file = new File(location + filename);
+        boolean deleted = file.delete();
+        if (!deleted) {
+            throw new FileDeleteFailureException();
+        }
     }
 }

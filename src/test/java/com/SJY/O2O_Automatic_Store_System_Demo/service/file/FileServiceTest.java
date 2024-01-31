@@ -1,5 +1,6 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.service.file;
 
+import com.SJY.O2O_Automatic_Store_System_Demo.exception.FileDeleteFailureException;
 import com.SJY.O2O_Automatic_Store_System_Demo.exception.FileUploadFailureException;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,8 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -81,6 +82,16 @@ class FileServiceTest {
         boolean after = isExists(testLocation + filename);
         assertThat(before).isTrue();
         assertThat(after).isFalse();
+    }
+
+    @Test
+    void deleteExceptionByFileDeleteFailureException() {
+        // given
+        String nonExistentFilename = "nonExistentFile.txt";
+
+        // when & then
+        assertThatThrownBy(() -> fileService.delete(nonExistentFilename))
+                .isInstanceOf(FileDeleteFailureException.class);
     }
 
     boolean isExists(String filePath) {

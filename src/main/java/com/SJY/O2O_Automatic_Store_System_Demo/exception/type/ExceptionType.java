@@ -19,6 +19,7 @@ public enum ExceptionType {
     POST_NOT_FOUND_EXCEPTION("postNotFoundException.code", "postNotFoundException.msg"),
     UNSUPPORTED_IMAGE_FORMAT_EXCEPTION("unsupportedImageFormatException.code", "unsupportedImageFormatException.msg"),
     FILE_UPLOAD_FAILURE_EXCEPTION("fileUploadFailureException.code", "fileUploadFailureException.msg"),
+    FILE_DELETE_FAILURE_EXCEPTION("fileDeleteFailureException.code", "fileDeleteFailureException.msg"),
     COMMENT_NOT_FOUND_EXCEPTION("commentNotFoundException.code", "commentNotFoundException.msg"),
     MESSAGE_NOT_FOUND_EXCEPTION("messageNotFoundException.code", "messageNotFoundException.msg"),
     REFRESH_TOKEN_FAILURE_EXCEPTION("refreshTokenFailureException.code", "refreshTokenFailureException.msg");

@@ -130,8 +130,15 @@ public class ExceptionAdvice {
     public ResponseEntity<Response> fileUploadFailureException(FileUploadFailureException e) {
         log.info("e = {}", e.getMessage());
         return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(responseHandler.getFailureResponse(FILE_UPLOAD_FAILURE_EXCEPTION));
+    }
+
+    @ExceptionHandler(FileDeleteFailureException.class)
+    public ResponseEntity<Response> fileDeleteFailureException() {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(responseHandler.getFailureResponse(FILE_DELETE_FAILURE_EXCEPTION));
     }
 
     @ExceptionHandler(CommentNotFoundException.class)
