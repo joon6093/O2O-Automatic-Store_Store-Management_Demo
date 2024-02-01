@@ -18,13 +18,13 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class FileServiceTest {
-    FileService fileService = new FileService();
+class LocalFileServiceTest {
+    LocalFileService localFileService = new LocalFileService();
     String testLocation = new File("src/test/resources/static").getAbsolutePath() + "/";
 
     @BeforeEach
     void beforeEach() throws IOException {
-        ReflectionTestUtils.setField(fileService, "location", testLocation);
+        ReflectionTestUtils.setField(localFileService, "location", testLocation);
         FileUtils.cleanDirectory(new File(testLocation));
     }
 
@@ -32,11 +32,11 @@ class FileServiceTest {
     void postConstructTest() throws IOException {
         // given
         String dirPath = testLocation + "testDir/";
-        ReflectionTestUtils.setField(fileService, "location", dirPath);
+        ReflectionTestUtils.setField(localFileService, "location", dirPath);
         FileUtils.cleanDirectory(new File(testLocation));
 
         // when
-        fileService.postConstruct();
+        localFileService.postConstruct();
 
         // then
         assertThat(new File(dirPath).exists()).isTrue();
@@ -49,7 +49,7 @@ class FileServiceTest {
         String filename = "testFile.txt";
 
         // when
-        fileService.upload(file, filename);
+        localFileService.upload(file, filename);
 
         // then
         assertThat(isExists(testLocation + filename)).isTrue();
@@ -62,7 +62,7 @@ class FileServiceTest {
         when(mockFile.getInputStream()).thenThrow(new IOException("Test exception"));
 
         // when & then
-        assertThatThrownBy(() -> fileService.upload(mockFile, "testFile.txt"))
+        assertThatThrownBy(() -> localFileService.upload(mockFile, "testFile.txt"))
                 .isInstanceOf(FileUploadFailureException.class)
                 .hasCauseInstanceOf(IOException.class);
     }
@@ -72,11 +72,11 @@ class FileServiceTest {
         // given
         MultipartFile file = new MockMultipartFile("myFile", "myFile.txt", MediaType.TEXT_PLAIN_VALUE, "test".getBytes());
         String filename = "testFile.txt";
-        fileService.upload(file, filename);
+        localFileService.upload(file, filename);
         boolean before = isExists(testLocation + filename);
 
         // when
-        fileService.delete(filename);
+        localFileService.delete(filename);
 
         // then
         boolean after = isExists(testLocation + filename);
@@ -90,7 +90,7 @@ class FileServiceTest {
         String nonExistentFilename = "nonExistentFile.txt";
 
         // when & then
-        assertThatThrownBy(() -> fileService.delete(nonExistentFilename))
+        assertThatThrownBy(() -> localFileService.delete(nonExistentFilename))
                 .isInstanceOf(FileDeleteFailureException.class);
     }
 

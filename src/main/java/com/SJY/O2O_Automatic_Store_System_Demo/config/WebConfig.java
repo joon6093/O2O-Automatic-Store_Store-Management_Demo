@@ -1,9 +1,9 @@
 package com.SJY.O2O_Automatic_Store_System_Demo.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.CacheControl;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -18,12 +18,14 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
     private final MessageSource messageSource;
-    @Value("${upload.image.location}")
-    private String location;
+    private final Environment env;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/image/**").addResourceLocations("file:" + location).setCacheControl(CacheControl.maxAge(Duration.ofHours(1L)).cachePublic());
+        String location = env.getProperty("upload.image.location");
+        if (location != null && !location.isEmpty()) {
+            registry.addResourceHandler("/image/**").addResourceLocations("file:" + location).setCacheControl(CacheControl.maxAge(Duration.ofHours(1L)).cachePublic());
+        }
     }
 
     @Override

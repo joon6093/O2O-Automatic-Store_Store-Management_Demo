@@ -14,6 +14,14 @@ spring:
         default_batch_fetch_size: 100
     open-in-view: true
     show-sql: true
-upload:
-  image:
-    location: /app/images/
+cloud:
+  aws:
+    region:
+      static: ${s3.region}
+    s3:
+      bucket: ${s3.bucket}
+    stack:
+      auto: false
+    credentials:
+      access-key: ${s3.access-key}
+      secret-key: ${s3.secret-key}

@@ -2,8 +2,10 @@ spring:
   profiles:
     default: local
     include: token
-  servlet.multipart.max-file-size: 5MB
-  servlet.multipart.max-request-size: 5MB
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
   messages:
     basename: i18n/exception,i18n/validation
     fallback-to-system-locale: false        # 애플리케이션에 설정된 기본 로케일을 사용
