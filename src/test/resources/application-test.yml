@@ -1,4 +1,7 @@
 spring:
+  config:
+    import:
+      - security/application-token.yml
   jpa:
     properties:
       hibernate:

@@ -1,7 +1,6 @@
 spring:
   profiles:
     default: local
-    include: token
   servlet:
     multipart:
       max-file-size: 5MB
@@ -20,9 +19,3 @@ springdoc:
     operationsSorter: method
     disable-swagger-default-url: true
     display-request-duration: true
-
----
-spring:
-  config:
-    activate:
-      on-profile: local, dev

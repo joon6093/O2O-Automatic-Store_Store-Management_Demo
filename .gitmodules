@@ -1,0 +1,3 @@
+[submodule "src/main/resources/security"]
+	path = src/main/resources/security
+	url = https://github.com/joon6093/O2O_Automatic_Store_System_Demo_Security.git

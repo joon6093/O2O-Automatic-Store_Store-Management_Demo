@@ -1,4 +1,7 @@
 spring:
+  config:
+    import:
+      - security/application-token.yml
   h2:
     console:
       enabled: true # /h2-console 설정
