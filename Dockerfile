@@ -18,10 +18,6 @@ FROM eclipse-temurin:17-jre as runtime
 RUN addgroup --system --gid 1000 worker && \
     adduser --system --uid 1000 --ingroup worker --disabled-password worker
 
-# 파일 저장을 위한 디렉토리 생성 및 권한 설정
-RUN mkdir -p /app/images && \
-    chown worker:worker /app/images
-
 # 빌드된 Jar 파일 복사
 COPY --from=builder /build/libs/*.jar app.jar
 
