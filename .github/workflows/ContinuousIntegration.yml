@@ -40,6 +40,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.ACTION_TOKEN }}
 
       - name: Cache Gradle packages
         id: cache-gradle
@@ -73,7 +76,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
+        with:
+          submodules: recursive
+          token: ${{ secrets.ACTION_TOKEN }}
+          
       - name: Cache Gradle packages
         id: cache-gradle
         uses: actions/cache@v4
@@ -127,6 +133,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          submodules: recursive
+          token: ${{ secrets.ACTION_TOKEN }}
 
       - name: Cache Gradle packages
         id: cache-gradle
