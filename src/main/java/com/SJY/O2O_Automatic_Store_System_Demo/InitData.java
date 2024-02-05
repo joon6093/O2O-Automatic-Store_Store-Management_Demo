@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-@Profile({"local", "dev"})
+@Profile("local")
 public class InitData {
     private final RoleRepository roleRepository;
     private final MemberRepository memberRepository;
