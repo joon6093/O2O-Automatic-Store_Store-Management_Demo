@@ -9,7 +9,7 @@ O2O 자동 상점 시스템 구현을 위한 Spring으로 구현한 물품 판�
 
 ## 인프라
 ### 인프라 구조
-![image](https://github.com/joon6093/O2O-Automatic-Store_Store-Management_Demo/assets/118044367/6c9bb23a-d61e-4d65-a8eb-0f1791abbe19)
+![image](https://github.com/joon6093/O2O-Automatic-Store_Store-Management_Demo/assets/118044367/f56ec7d4-e28e-483d-a4b5-36a76617ed2c)
 
 ### CI/CD 파이프라인
 ![image](https://github.com/joon6093/O2O-Automatic-Store_Store-Management_Demo/assets/118044367/e9e14543-c023-40df-b736-acc851af84de)
@@ -22,6 +22,4 @@ O2O 자동 상점 시스템 구현을 위한 Spring으로 구현한 물품 판�
 #### Jenkins 
 ![image](https://github.com/joon6093/O2O_Automatic_Store_System_Demo/assets/118044367/1449912f-b5b9-40db-9024-2913f41a4180)
 
-[Jenkins를 이용한 Continuous Deployment](https://velog.io/@joon6093/%EA%B3%B5%EB%B6%80%EC%A0%95%EB%A6%AC-Nginx%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EB%AC%B4%EC%A4%91%EB%8B%A8-%EB%B0%B0%ED%8F%AC)
-
-
+[Jenkins를 이용한 Continuous Deployment](https://velog.io/@joon6093/%EC%A0%A0%ED%82%A8%EC%8A%A4-%EB%8F%84%EC%BB%A4)
